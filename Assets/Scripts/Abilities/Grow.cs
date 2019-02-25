@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grow : MonoBehaviour
+public class Grow : Ability
 {
-    // Start is called before the first frame update
-    void Start()
+
+    void Start ()
     {
-        
+        ability_name = "";
+        script = null;
+        traits = new List<Trait> ();
+        traits.AddRange (GameCore.instance.GameVariables.SomeAvailableTraits); // do something similar, pick the traits you need
     }
 
     // Update is called once per frame
