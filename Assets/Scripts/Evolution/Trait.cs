@@ -8,7 +8,7 @@ public class Trait
     // variables
     private string name;
     private int length;
-    private delegate int intensityCheck (List<bool> genome_segment );
+    public delegate int intensityCheck (List<bool> genome_segment );
     public intensityCheck IntensityStatus;
     //protected int? genome_position;
     //protected int intensity; // describes if trait is active and to which extent it is
@@ -59,9 +59,9 @@ public class Trait
     /// </summary>
     public Trait ( string trait_name_given, int trait_length, intensityCheck intensity_function )
     {
-        Name = trait_name_given;
-        Length = trait_length;
-        updateIntensityStatus intensity_function;
+        name = trait_name_given;
+        length = trait_length;
+        IntensityStatus = intensity_function;
         //Intensity = trait_intensity;
     }
 }

@@ -10,13 +10,14 @@ public class OrbitCameraZoom : MonoBehaviour
     private float distance = 15.0f;
     [SerializeField]private float maxDistance = 80;
     [SerializeField]private float minDistance = 0.6f;
-    [SerializeField]private float xSpeed = 20.0f;
-    [SerializeField]private float ySpeed = 20.0f;
-    private int yMinLimit = -40;
-    private int yMaxLimit = 40;
+    //[SerializeField]private float xSpeed = 20.0f;
+    //[SerializeField]private float ySpeed = 20.0f;
+    //private int yMinLimit = -40;
+    //private int yMaxLimit = 40;
     [SerializeField]private int zoomRate = 20;
     [SerializeField]private float panSpeed = 0.3f;
     [SerializeField]private float zoomDampening = 2.5f;
+    [SerializeField]float scroll_click_delay = 0.25f;
 
     private float xDeg = 0.0f;
     private float yDeg = 0.0f;
@@ -28,7 +29,7 @@ public class OrbitCameraZoom : MonoBehaviour
     private Vector3 position;
 
     private SlerpCoroutine slerp_coroutine_script;
-    private bool locked; // locks the usage of the mechanism that zooms in on the mouse pointer.
+    float lock_time = 0f; // locks the usage of the mechanism that zooms in on the mouse pointer.
 
     public Transform Target
     {
@@ -129,14 +130,15 @@ public class OrbitCameraZoom : MonoBehaviour
         // otherwise if middle mouse is selected, we pan by way of transforming the target in screenspace
         else if ( Input.GetMouseButton (2) || Input.GetKey (KeyCode.LeftShift) && Input.GetMouseButton (0) )
         {
-            //grab the rotation of the camera so we can move in a psuedo local XY space
+            //grab the rotation of the camera so we can move in a pseudo local XY space
             //Target.rotation = transform.rotation;
-            Target.Translate (Vector3.right * -Input.GetAxis ("Mouse X") * panSpeed);
-            Target.Translate (transform.up * -Input.GetAxis ("Mouse Y") * panSpeed, Space.World);
+            Target.Translate (Vector3.right * -Input.GetAxis ("Mouse X") * panSpeed * (0.1f + currentDistance/maxDistance));
+            Target.Translate (transform.up * -Input.GetAxis ("Mouse Y") * panSpeed * (0.1f + currentDistance / maxDistance), Space.World);
+            slerp_coroutine_script.setTarget (Target.position, Target.rotation);
         }
 
         ////////Orbit Position
-        if ( Input.GetAxis ("Mouse ScrollWheel") > 0f && !locked)
+        if ( Input.GetAxis ("Mouse ScrollWheel") > 0f && Time.time > lock_time + scroll_click_delay ) // scrolling in
         {
             //Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane)), Vector3.up);
             RaycastHit hit;
@@ -145,16 +147,15 @@ public class OrbitCameraZoom : MonoBehaviour
             if ( Physics.Raycast (ray, out hit, 1000.0f) )
             {
                 // set a slerp (or rather lerp) goal for your camera focus point. The camera will follow.
-                slerp_coroutine_script.setTarget (hit.point, transform.rotation);
+                slerp_coroutine_script.setTarget (hit.point, Target.rotation);
                 // see where you're pointing
                 //GameObject instance = Instantiate(Resources.Load("Perishable Marker", typeof(GameObject)), hit.point - new Vector3 (0,0,0.1f), transform.rotation ) as GameObject;
             }
-
-            
-            locked = true;
+            lock_time = Time.time;
 
         }
-        else if ( Input.GetAxis ("Mouse ScrollWheel") == 0f ) locked = false;
+
+        
 
         // affect the desired Zoom distance if we roll the scrollwheel
         desiredDistance -= Input.GetAxis ("Mouse ScrollWheel") * Time.deltaTime * zoomRate * Mathf.Abs (desiredDistance) * 0.01f * currentDistance;
@@ -164,7 +165,7 @@ public class OrbitCameraZoom : MonoBehaviour
         currentDistance = Mathf.Lerp (currentDistance, desiredDistance, Time.deltaTime * zoomDampening);
 
         // calculate position based on the new currentDistance 
-        position = Target.position - (rotation * Vector3.forward * currentDistance/* + targetOffset*/);
+        position = Vector3.Lerp (transform.position, (Target.position - (rotation * Vector3.forward * currentDistance/* + targetOffset*/)), Time.deltaTime * 1.2f * zoomDampening );
         transform.position = position;
     }
 

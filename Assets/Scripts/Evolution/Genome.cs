@@ -27,13 +27,16 @@ public class Genome {
     // class
     private class TraitManifestation {
         
-        public Trait Trait;
+        private Trait trait;
         private List<ManifestationSegment> segments;
-        public int Intensity;   
+        private int intensity;   
         
         // Properties
-        public int Start {get => segments[0].position}
-                
+        public int Start { get => Segments[0].position; }
+        public Trait Trait { get => trait; set => trait = value; }
+        private List<ManifestationSegment> Segments { get => segments; set => segments = value; }
+        public int Intensity { get => intensity; set => intensity = value; }
+
         public TraitManifestation (Trait given_trait, int position, int intensity)
         {
             Trait = given_trait;
@@ -58,15 +61,15 @@ public class Genome {
         
         public void updateIntensityStatus (List<bool> genome_string)
         {
-            if (getRelevantGenes (genome_string ).Count != Trait.Length)
+            if ( getRelevantGenes (genome_string).Count != Trait.Length)
                 Debug.Log ("Assertion failes. Relevant genes length does not match Lenght of Trait " + Trait.Name + ".");
-            Intensity = Trait.IntensityStatus (getRelevantGenes (genome_string ) )
+            Intensity = Trait.IntensityStatus (getRelevantGenes (genome_string));
         }
         
         private List<bool> getRelevantGenes (List<bool> genome_string )
         {
             List<bool> relevant_genes = new List<bool> ();
-            foreach (ManifestationSegment segment in segments)
+            foreach (ManifestationSegment segment in Segments)
             {
                 //if (segment.position + segment.length > genome_string.Count ) // segment is out of genome bounds
                 //{
@@ -82,6 +85,7 @@ public class Genome {
                 //}
                 //else relevant_genes.AddRange (genome_string.Range (segment.position, segment.length) );
             }
+            return relevant_genes;
         }
         
         
@@ -98,7 +102,7 @@ public class Genome {
     //public List<TraitManifestation> Trait_Manifestations { get => trait_manifestations; /*set => traits = value;*/ }
     public List<bool> GenomeString { get => genome_string;/* set => genome_string = value;*/ }
     public int Length {get => GenomeString.Count;}
-    public int TraitsCount {get => Traits.Count;}
+    public List<Trait> Traits { get => getTraits (); }
     public List<int> PastMutations { get => past_mutations;/* set => genome_string = value;*/ }
     public float MutationScale { get => mutation_scale; set => mutation_scale = value; }
 
@@ -107,7 +111,7 @@ public class Genome {
     public Genome (int length = 30)
     {
         // Fill Genome with random values
-        GenomeString = new List<bool> (30);
+        genome_string = new List<bool> (30);
         for ( int i = 0; i < length; i++ ) GenomeString[i] = (Random.value > 0.5f);
     }    
     
@@ -135,12 +139,10 @@ public class Genome {
         }
     }
     
-    public 
-    
     public void addTrait ( Trait trait )
     {
         // if trait is already in this genome, abort
-        foreach (TraitManifestation manifestation in trait_manifestations) if manifestation.Trait.Name == trait.Name) return;
+        foreach (TraitManifestation manifestation in trait_manifestations) if (manifestation.Trait.Name == trait.Name) return;
         
         // the trait is added at a random position in the genome
         int pos = Random.Range (0, GenomeString.Count);
@@ -149,7 +151,21 @@ public class Genome {
     
     public void addTrait ( Trait trait, int position_in_genome )
     {
-        trait_manifestations.Add (new TraitManifestation (trait, position_in_genome, trait.IntensityStatus (genome_string.Range (position_in_genome, trait.Length)) );
+        // if trait is already in this genome, abort
+        foreach ( TraitManifestation manifestation in trait_manifestations ) if ( manifestation.Trait.Name == trait.Name ) return;
+
+        trait_manifestations.Add (new TraitManifestation (trait, position_in_genome, genome_string ));
+    }
+
+    private List<Trait> getTraits ()
+    {
+        List<Trait> all_traits = new List<Trait> ();
+        foreach (TraitManifestation manifestation in trait_manifestations )
+        {
+            all_traits.Add (manifestation.Trait);
+        }
+
+        return all_traits;
     }
     /*
     /// <summary>
