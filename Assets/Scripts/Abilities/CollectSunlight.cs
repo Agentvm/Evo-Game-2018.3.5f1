@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CollectSunlight : Ability
+public class CollectSunlight : MonoBehaviour
 {
     void Start ()
     {
-        ability_name = "";
-        script = null;
-        traits = new List<Trait> ();
+        
     }
 
     // Update is called once per frame

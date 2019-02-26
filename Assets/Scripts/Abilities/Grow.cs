@@ -2,20 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grow : Ability
+public class Grow : MonoBehaviour
 {
-
     void Start ()
     {
-        ability_name = "";
-        script = null;
-        traits = new List<Trait> ();
-        traits.AddRange (GameCore.instance.GameVariables.SomeAvailableTraits); // do something similar, pick the traits you need
+
     }
 
     // Update is called once per frame
-    void Update()
+    void Update ()
     {
-        
+
     }
 }

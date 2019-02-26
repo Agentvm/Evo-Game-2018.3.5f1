@@ -8,8 +8,8 @@ public class Trait
     // variables
     private string name;
     private int length;
-    public delegate int intensityCheck (List<bool> genome_segment );
-    public intensityCheck IntensityStatus;
+    public delegate int IntensityCheck (List<bool> genome_segment );
+    public IntensityCheck IntensityStatus;
     //protected int? genome_position;
     //protected int intensity; // describes if trait is active and to which extent it is
     //private Genome genome;
@@ -57,7 +57,7 @@ public class Trait
     /// <summary>
     /// Constructor. Position in genome is determined when trait is added to a genome.
     /// </summary>
-    public Trait ( string trait_name_given, int trait_length, intensityCheck intensity_function )
+    public Trait ( string trait_name_given, int trait_length, IntensityCheck intensity_function )
     {
         name = trait_name_given;
         length = trait_length;
