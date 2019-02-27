@@ -6,14 +6,19 @@ using UnityEngine;
 public class Character : MonoBehaviour {
 
     private Genome genome;
+    private Color color;
+    private float size;
 
     // Properties
-    public Genome Genome
-    {
-        get { return genome; }
-        //set { genome = value; }
-    }
+    public Genome Genome { get => genome; }
+    public float Size { get => size; set => size = value; }
 
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="mutated_parent_genome"></param>
+    /// <param name="new_traits"></param>
     public Character ( Genome mutated_parent_genome, List<Trait> new_traits = null )
     {
         genome = mutated_parent_genome;

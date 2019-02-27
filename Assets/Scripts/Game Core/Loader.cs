@@ -11,7 +11,7 @@ public class Loader : MonoBehaviour
     void Awake ()
     {
         //Check if a GameManager has already been assigned to static variable GameManager.instance or if it's still null
-        if ( GameCore.instance == null )
+        if ( GameCore.Instance == null )
 
             //Instantiate gameManager prefab
             Instantiate (game_core);

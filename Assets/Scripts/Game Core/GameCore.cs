@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameCore : MonoBehaviour
 {
 
-    public static GameCore instance = null; // Static instance of GameManager which allows it to be accessed by any other script.
+    public static GameCore Instance = null; // Static instance of GameManager which allows it to be accessed by any other script.
     private GameVariables game_variables;   // Store a reference to our game variables.
 
     public GameVariables GameVariables
@@ -17,9 +17,9 @@ public class GameCore : MonoBehaviour
     void Awake ()
     {
         // check there is only one instance of this and that it is not destroyed on load
-        if ( instance == null )
-            instance = this;
-        else if ( instance != this )
+        if ( Instance == null )
+            Instance = this;
+        else if ( Instance != this )
             Destroy (gameObject);
         DontDestroyOnLoad (gameObject);
 

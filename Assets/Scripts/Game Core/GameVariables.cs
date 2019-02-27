@@ -7,13 +7,27 @@ public class GameVariables : MonoBehaviour
 {
     private double game_ticks = 0;
     private List<Trait> available_traits;
+    private List<Ability> available_abilities;
 
     public List<Trait> AvailableTraits { get => available_traits; }
+    public List<Ability> AvailableAbilities { get => available_abilities; }
+
     public delegate int IntensityCheck ( List<bool> genome_segment );
+
 
     public void initialize ()
     {
-        available_traits.Add (new Trait ("MaxSize", 8, IntensityFunctionCollection.MaxSizeIntensity () ));
+        // List of all Traits In-Game
+        available_traits.Add (new Trait ("MaxSize", 8, IntensityFunctionCollection.MaxSize ));
+        available_traits.Add (new Trait ("GrowRate", 10, IntensityFunctionCollection.GrowRate ));
+        available_traits.Add (new Trait ("LeavesDensity", 7, IntensityFunctionCollection.LeavesDensity )); //
+        available_traits.Add (new Trait ("LightRequirement", 16, IntensityFunctionCollection.LightRequirement ));
+        available_traits.Add (new Trait ("OffspringCount", 10, IntensityFunctionCollection.OffspringCount ));
+
+        available_abilities.Add (new Ability ("Grow", new List<string> () { "MaxSize", "GrowRate" }));
+        available_abilities.Add (new Ability ("GrowLeaves", new List<string> () { "MaxSize", "GrowRate", "LeavesDensity" }));
+        available_abilities.Add (new Ability ("ThrowShadow", new List<string> () { "MaxSize", "LeavesDensity" }));
+        available_abilities.Add (new Ability (
     }
 
     public List<Trait> getTraits ( List<string> requested_traits )

@@ -12,7 +12,8 @@
   --- ToDo -----------------------------
 
  - Genome implement addTraitStructure
- - Use Interfaces to make Objects displayable, then change InfoTag to display their content
+ - Use Interface IDisplayable to make Objects displayable, then change InfoTag to display their content
+ - Let every Charakter have a second, "appearance" genom, that is composed of random genes of the main genome. This marks the color of the individual.
 
 
  --- Verbesserungen -----------------------------
