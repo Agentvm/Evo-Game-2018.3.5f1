@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grow : MonoBehaviour
+// https://docs.unity3d.com/ScriptReference/RequireComponent.html
+// [RequireComponent(typeof(Rigidbody))]
+public class Grow : AbilityBaseClass
 {
     // Start is called before the first frame update
     void Start()

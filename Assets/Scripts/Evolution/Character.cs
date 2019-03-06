@@ -6,7 +6,8 @@ using UnityEngine;
 public class Character : MonoBehaviour {
 
     private Genome genome;
-    private Color color;
+    private Genome genome2;
+    private Color color;// color color color;
     private float size;
 
     // Properties
@@ -41,6 +42,65 @@ public class Character : MonoBehaviour {
             // good to know
             // ((MySpellScript)GetComponent(mType)).Fire();
         }
+        
 
     }
+
+    void setColorbyGenome ()
+    {
+        
+        if (genome.GenomeString.Count < 24) // vermin
+        {
+            color = new Color (0.1f, 0.1f, 0.1f, 0.6f);
+            return;
+        }
+        else if (genome.GenomeString.Count < 32)
+        {
+            float r = binaryToDecimal (genome.GenomeString.GetRange (0, 7) ) / 256;
+            float g = binaryToDecimal (genome.GenomeString.GetRange (8, 15) ) / 256;
+            float b = binaryToDecimal (genome.GenomeString.GetRange (16, 23) ) / 256;
+            float a = 0.6f;
+
+            color = new Color (r, g, b, a);
+        }
+        else
+        {
+            float r = binaryToDecimal (genome.GenomeString.GetRange (0, 7) ) / 256;
+            float g = binaryToDecimal (genome.GenomeString.GetRange (8, 15) ) / 256;
+            float b = binaryToDecimal (genome.GenomeString.GetRange (16, 23) ) / 256;
+            float a = Mathf.Min (binaryToDecimal (genome.GenomeString.GetRange (24, 31) ) / 256, 0.5f);
+
+            color = new Color (r, g, b, a );
+            return;
+        }
+    }
+
+    //int binaryToDecimal ( List<bool> list )
+    //{
+    //    int iteration = 0;
+    //    float result = 0;
+
+    //    foreach ( bool boolean in list )
+    //    {
+    //        result += (System.Convert.ToInt32 (boolean) * Mathf.Pow (2, iteration)); // convert bits to decimal
+    //        iteration++;
+    //    }
+
+    //    return (int)result;
+    //}
+
+    float binaryToDecimal ( List<bool> list )
+    {
+        int iteration = 0;
+        float result = 0;
+
+        foreach ( bool boolean in list )
+        {
+            result += (System.Convert.ToInt32 (boolean) * Mathf.Pow (2, iteration)); // convert bits to decimal
+            iteration++;
+        }
+
+        return result;
+    }
+
 }
