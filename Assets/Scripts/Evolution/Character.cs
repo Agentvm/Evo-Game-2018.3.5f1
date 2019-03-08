@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Base class for animals, plants, etc that are subject to evolution
+[RequireComponent (typeof (SpriteRenderer))]
 public class Character : MonoBehaviour {
 
     private Genome genome;
-    private Genome genome2;
     private Color color;// color color color;
     private float size;
 
     // Properties
     public Genome Genome { get => genome; }
     public float Size { get => size; set => size = value; }
-
 
     /// <summary>
     /// Constructor
@@ -52,7 +51,6 @@ public class Character : MonoBehaviour {
         if (genome.GenomeString.Count < 24) // vermin
         {
             color = new Color (0.1f, 0.1f, 0.1f, 0.6f);
-            return;
         }
         else if (genome.GenomeString.Count < 32)
         {
@@ -71,8 +69,9 @@ public class Character : MonoBehaviour {
             float a = Mathf.Min (binaryToDecimal (genome.GenomeString.GetRange (24, 31) ) / 256, 0.5f);
 
             color = new Color (r, g, b, a );
-            return;
         }
+
+        this.GetComponent<SpriteRenderer> ().color = color;
     }
 
     //int binaryToDecimal ( List<bool> list )

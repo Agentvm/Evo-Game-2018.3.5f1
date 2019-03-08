@@ -2,27 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IntensityFunctionCollection
+public static class IntensityFunctionCollection
 {
-
-    //public static IntensityFunctionCollection Instance = null; // Static instance of GameManager which allows it to be accessed by any other script.
-
-
-    //// Awake is always called before any Start functions
-    //public IntensityFunctionCollection ()
-    //{
-    //    // check there is only one instance of this and that it is not destroyed on load
-    //    if ( Instance == null )
-    //        Instance = this;
-    //}
-
-
     // Intensity Functions // Traits
 
     /// <summary>
     /// Determines Maximum Size of a Character (e.g. Creature or Plant)
     /// </summary>
-    public int MaxSize ( List<bool> genome_segment )
+    public static int MaxSize ( List<bool> genome_segment )
     {
         return CountTrueValues (genome_segment );
     }
