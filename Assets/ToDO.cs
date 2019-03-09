@@ -22,6 +22,7 @@
  
  - Make a Lerp Version or -Option of SlerpCoroutine
  - fix camera scrolling movement
+ - Genome Convenience Functions for adding multiple interwoven traits
 
   --- Ideas -----------------------------
  

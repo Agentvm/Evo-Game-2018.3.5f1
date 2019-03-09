@@ -23,16 +23,16 @@ public class Grow : AbilityBaseClass
     {
         //traits = new List<Trait> ();
         Traits.AddRange (GameCore.Instance.GameVariables.getTraits (new List<string> () { "MaxSize", "GrowRate" } ));
-        max_size_intensity = Traits[0].IntensityStatus (character.Genome.GenomeString); // initialize character zero via GameVariables (FindGameObjectsWithTag)
+        //max_size_intensity = Traits[0].IntensityStatus (character.Genome.GenomeString); // initialize character zero via GameVariables (FindGameObjectsWithTag)
         character = GetComponent<Character> ();
     }
 
     public void Tick ()
     {
-        if ( max_size_intensity > 8 )
+        /*if ( max_size_intensity > 8 )
         {
             float scalar = max_size_intensity / (max_age / 4f);
             transform.localScale.Scale (new Vector3 (1f, 1f, 1f));
-        }
+        }*/
     }
 }

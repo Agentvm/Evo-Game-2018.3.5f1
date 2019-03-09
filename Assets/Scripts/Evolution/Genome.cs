@@ -39,6 +39,7 @@ public class Genome {
 
         public TraitManifestation (Trait given_trait, int position, int intensity)
         {
+            segments = new List<ManifestationSegment> ();
             Trait = given_trait;
             Intensity = intensity;
             Segments.Add (new ManifestationSegment (position, Trait.Length));
@@ -46,8 +47,9 @@ public class Genome {
         
         public TraitManifestation (Trait given_trait, int position, List<bool> genome_string)
         {
+            segments = new List<ManifestationSegment> ();
             Trait = given_trait;
-            Segments.Add (new ManifestationSegment (position, Trait.Length));
+            Segments.Add (new ManifestationSegment (position, Trait.Length ));
             updateIntensityStatus (genome_string );
         }
         
@@ -59,17 +61,21 @@ public class Genome {
             updateIntensityStatus (genome_string );
         }*/
         
-        public void updateIntensityStatus (List<bool> genome_string)
+        public void updateIntensityStatus (List<bool> genome_string )
         {
-            if ( getRelevantGenes (genome_string).Count != Trait.Length)
-                Debug.Log ("Assertion failes. Relevant genes length does not match Lenght of Trait " + Trait.Name + ".");
-            Intensity = Trait.IntensityStatus (getRelevantGenes (genome_string));
+            Debug.Log ("hello");
+
+            if (getRelevantGenes (genome_string).Count != Trait.Length )
+                Debug.LogError ("Assertion failes. Relevant genes length does not match Lenght of Trait " + Trait.Name + ".");
+            Intensity = Trait.IntensityStatus (getRelevantGenes (genome_string ));
+
+            Debug.Log ("Ciao");
         }
         
         private List<bool> getRelevantGenes (List<bool> genome_string )
         {
             List<bool> relevant_genes = new List<bool> ();
-            foreach (ManifestationSegment segment in Segments)
+            foreach (ManifestationSegment segment in Segments )
             {
                 //if (segment.position + segment.length > genome_string.Count ) // segment is out of genome bounds
                 //{
@@ -94,7 +100,7 @@ public class Genome {
     // Variables
     private List<bool> genome_string;
     private List<TraitManifestation> trait_manifestations = new List<TraitManifestation> ();
-    private List<int> past_mutations = new List<int> ();
+    private List<int> past_mutations = new List<int> (); // rather fits in species
     private float mutation_scale = 1.0f;
 
     
@@ -112,7 +118,7 @@ public class Genome {
     {
         // Fill Genome with random values
         genome_string = new List<bool> (30);
-        for ( int i = 0; i < length; i++ ) GenomeString[i] = (Random.value > 0.5f);
+        for ( int i = 0; i < length; i++ ) GenomeString.Add (Random.value > 0.5f);
     }    
     
     

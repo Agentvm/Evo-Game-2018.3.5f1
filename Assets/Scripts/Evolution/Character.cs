@@ -8,11 +8,12 @@ public class Character : MonoBehaviour {
 
     private Genome genome;
     private Color color;// color color color;
-    private float size;
+    //private float size;
 
     // Properties
     public Genome Genome { get => genome; }
-    public float Size { get => size; set => size = value; }
+    //public float Size { get => size;}
+    public Color Color { get => color; }
 
     /// <summary>
     /// Constructor
@@ -22,27 +23,27 @@ public class Character : MonoBehaviour {
     public Character ( Genome mutated_parent_genome, List<Trait> new_traits = null )
     {
         genome = mutated_parent_genome;
+
+        // add traits and update their intensities
         if (new_traits != null)
         {
             foreach (Trait new_trait in new_traits)
                 Genome.addTrait (new_trait); // random trait positions in genome
-        }
+        }        
+        //genome.updateIntensities (); // check if Traits are currently active (is done implicitly)
         
-        genome.updateIntensities (); // check if Traits are currently active
-        
+
+        // add abilities (request list of abilities for this Constructor?)
         foreach ( Trait trait in genome.Traits )
         {
-
-
-
             // Add Behaviour Script to gameobject
             //System.Type ability_type = System.Type.GetType(trait.Name );
             //gameObject.AddComponent (ability_type);
             // good to know
             // ((MySpellScript)GetComponent(mType)).Fire();
         }
-        
 
+        setColorbyGenome ();
     }
 
     void setColorbyGenome ()
