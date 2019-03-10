@@ -63,13 +63,8 @@ public class Genome {
         
         public void updateIntensityStatus (List<bool> genome_string )
         {
-            Debug.Log ("hello");
-
-            if (getRelevantGenes (genome_string).Count != Trait.Length )
-                Debug.LogError ("Assertion failes. Relevant genes length does not match Lenght of Trait " + Trait.Name + ".");
+            //Debug.Log ("Getting relevant genes for Trait " + Trait.Name);
             Intensity = Trait.IntensityStatus (getRelevantGenes (genome_string ));
-
-            Debug.Log ("Ciao");
         }
         
         private List<bool> getRelevantGenes (List<bool> genome_string )
@@ -77,20 +72,35 @@ public class Genome {
             List<bool> relevant_genes = new List<bool> ();
             foreach (ManifestationSegment segment in Segments )
             {
+                //Debug.Log ("genome_string.Count: " + genome_string.Count );
+                //Debug.Log ("segment.length: " + segment.length);
+                //Debug.Log ("segment.pos: " + segment.position );
+
                 //if (segment.position + segment.length > genome_string.Count ) // segment is out of genome bounds
                 //{
-                    for (int i = 0; i < segment.length; i++) // progress gene per gene
+                for (int i = 0; i < segment.length; i++) // progress gene per gene
+                {
+                    //Debug.Log ("i: " + i );
+                    //Debug.Log ("if (" + segment.position + " + "+i+" > "+genome_string.Count+") ");
+                    if (segment.position + i >= genome_string.Count) // wrap
                     {
-                        if (segment.position + i > genome_string.Count) // wrap
-                        {
-                            relevant_genes.Add (genome_string[segment.position + i - genome_string.Count]); // start again at the beginning of genome
-                        }
-                        // still in bounds (segment starts inbounds but is too long)
-                        else relevant_genes.Add (genome_string[segment.position + i]);
+                        //Debug.Log ("wrapping, Add genome_string[" + segment.position + " + " + i + " - " + genome_string.Count + "]");
+                        relevant_genes.Add (genome_string[segment.position + i - genome_string.Count]); // start again at the beginning of genome
                     }
+                    // still in bounds (segment starts inbounds but is too long)
+                    else
+                    {
+                        //Debug.Log ("in bounds, Add genome_string[" + segment.position + " + " + i + "]");
+                        relevant_genes.Add (genome_string[segment.position + i]);
+                    }
+                }
+
                 //}
                 //else relevant_genes.AddRange (genome_string.Range (segment.position, segment.length) );
             }
+
+            if ( relevant_genes.Count != Trait.Length )
+                Debug.LogError ("Assertion failed. Relevant genes length does not match Lenght of Trait " + Trait.Name + ".");
             return relevant_genes;
         }
         
@@ -118,7 +128,7 @@ public class Genome {
     {
         // Fill Genome with random values
         genome_string = new List<bool> (30);
-        for ( int i = 0; i < length; i++ ) GenomeString.Add (Random.value > 0.5f);
+        for ( int i = 0; i < length; i++ ) genome_string.Add (Random.value > 0.5f);
     }    
     
     
@@ -128,8 +138,10 @@ public class Genome {
     /// </summary>
     public void updateIntensities ()
     {
-        foreach (TraitManifestation manifestation in trait_manifestations)
-            manifestation.updateIntensityStatus (genome_string );
+        foreach ( TraitManifestation manifestation in trait_manifestations )
+        {
+            manifestation.updateIntensityStatus (genome_string);
+        }
     }
     
     public void mutate ()

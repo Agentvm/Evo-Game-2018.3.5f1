@@ -27,15 +27,15 @@ public class GameVariables : MonoBehaviour
         //available_abilities.Add (new Ability ("GrowLeaves", new List<string> () { "MaxSize", "GrowRate", "LeavesDensity" }));
         //available_abilities.Add (new Ability ("CollectLight"
 
-        foreach ( GameObject obj in GameObject.FindGameObjectsWithTag ("Origin") )
+        // initialise the first few individual Characters
+        List<Character> adams_and_eves = new List<Character> ();
+        foreach ( GameObject obj in GameObject.FindGameObjectsWithTag ("Origin") ) // ToDo: don't use Origin Tag, use Instantiate
         {
-            // initialise the first few individual Characters
             if ( obj.GetComponent<Character> () == null)
                 obj.AddComponent<Character> ();
-            Character char1 = obj.GetComponent<Character> ();
-            char1 = new Character (new Genome (), getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */} ));
-
-            Debug.Log (char1.Color);
+            Character character_script = obj.GetComponent<Character> ();
+            character_script.initialize (new Genome (), getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */} ));
+            adams_and_eves.Add (character_script);
         }
 
     }

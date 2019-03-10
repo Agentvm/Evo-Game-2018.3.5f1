@@ -21,9 +21,10 @@ public class Grow : AbilityBaseClass
     // Start is called before the first frame update
     void Start()
     {
-        //traits = new List<Trait> ();
+        character = GetComponent<Character> ();
         Traits.AddRange (GameCore.Instance.GameVariables.getTraits (new List<string> () { "MaxSize", "GrowRate" } ));
-        //max_size_intensity = Traits[0].IntensityStatus (character.Genome.GenomeString); // initialize character zero via GameVariables (FindGameObjectsWithTag)
+        
+        max_size_intensity = Traits[0].IntensityStatus (character.Genome.GenomeString); // initialize character zero via GameVariables (FindGameObjectsWithTag)
         character = GetComponent<Character> ();
     }
 

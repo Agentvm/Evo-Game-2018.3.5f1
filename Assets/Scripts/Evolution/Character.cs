@@ -7,23 +7,51 @@ using UnityEngine;
 public class Character : MonoBehaviour {
 
     private Genome genome;
-    private Color color;// color color color;
+    private SpriteRenderer sprite;
     //private float size;
 
     // Properties
     public Genome Genome { get => genome; }
+    public List<Trait> Traits { get => genome.Traits; }
     //public float Size { get => size;}
-    public Color Color { get => color; }
+    //public Color Color { get => color; }
+
+    private void Start () // called after Constructor
+    {
+        // 1. obj.Character --> what? nope.
+        // 2. like in SpaceGothicNavigation --> works
+        // 3. All in Start and with function
+        
+        sprite = GetComponent<SpriteRenderer> ();
+        setColorbyGenome ();
+    }
+
+    /*public void addTrait ( Trait new_trait )
+    {
+        if ( new_trait != null )
+        {
+            Genome.addTrait (new_trait); // random trait positions in genome
+        }
+    }
+
+    public void addTraits ( List<Trait> new_traits )
+    {
+        if ( new_traits != null )
+        {
+            foreach ( Trait new_trait in new_traits )
+                Genome.addTrait (new_trait); // random trait positions in genome
+        }
+    }*/
+
 
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="mutated_parent_genome"></param>
     /// <param name="new_traits"></param>
-    public Character ( Genome mutated_parent_genome, List<Trait> new_traits = null )
+    public void initialize ( Genome mutated_parent_genome, List<Trait> new_traits = null )
     {
         genome = mutated_parent_genome;
-
         // add traits and update their intensities
         if (new_traits != null)
         {
@@ -34,45 +62,45 @@ public class Character : MonoBehaviour {
         
 
         // add abilities (request list of abilities for this Constructor?)
-        foreach ( Trait trait in genome.Traits )
-        {
-            // Add Behaviour Script to gameobject
-            //System.Type ability_type = System.Type.GetType(trait.Name );
-            //gameObject.AddComponent (ability_type);
-            // good to know
-            // ((MySpellScript)GetComponent(mType)).Fire();
-        }
+        //foreach ( Trait trait in genome.Traits )
+        //{
+        //    // Add Behaviour Script to gameobject
+        //    //System.Type ability_type = System.Type.GetType(trait.Name );
+        //    //gameObject.AddComponent (ability_type);
+        //    // good to know
+        //    // ((MySpellScript)GetComponent(mType)).Fire();
+        //}
 
-        setColorbyGenome ();
+        // Start will be called next
     }
 
     void setColorbyGenome ()
     {
-        
         if (genome.GenomeString.Count < 24) // vermin
         {
-            color = new Color (0.1f, 0.1f, 0.1f, 0.6f);
+            sprite.color = new Color (0.1f, 0.1f, 0.1f, 0.6f);
+
         }
         else if (genome.GenomeString.Count < 32)
         {
-            float r = binaryToDecimal (genome.GenomeString.GetRange (0, 7) ) / 256;
-            float g = binaryToDecimal (genome.GenomeString.GetRange (8, 15) ) / 256;
-            float b = binaryToDecimal (genome.GenomeString.GetRange (16, 23) ) / 256;
-            float a = 0.6f;
+            float r = binaryToDecimal (genome.GenomeString.GetRange (0, 8) ) / 256;
+            float g = binaryToDecimal (genome.GenomeString.GetRange (8, 8) ) / 256;
+            float b = binaryToDecimal (genome.GenomeString.GetRange (16, 8) ) / 256;
+            float a = 0.8f;
 
-            color = new Color (r, g, b, a);
+            sprite.color = new Color (r, g, b, a);
         }
         else
         {
-            float r = binaryToDecimal (genome.GenomeString.GetRange (0, 7) ) / 256;
-            float g = binaryToDecimal (genome.GenomeString.GetRange (8, 15) ) / 256;
-            float b = binaryToDecimal (genome.GenomeString.GetRange (16, 23) ) / 256;
-            float a = Mathf.Min (binaryToDecimal (genome.GenomeString.GetRange (24, 31) ) / 256, 0.5f);
+            float r = binaryToDecimal (genome.GenomeString.GetRange (0, 8) ) / 256;
+            float g = binaryToDecimal (genome.GenomeString.GetRange (8, 8) ) / 256;
+            float b = binaryToDecimal (genome.GenomeString.GetRange (16, 8) ) / 256;
+            float a = Mathf.Min (binaryToDecimal (genome.GenomeString.GetRange (24, 8) ) / 256, 0.5f);
 
-            color = new Color (r, g, b, a );
+            sprite.color = new Color (r, g, b, a );
         }
-
-        this.GetComponent<SpriteRenderer> ().color = color;
+        
+        //sprite.color = color;
     }
 
     //int binaryToDecimal ( List<bool> list )
