@@ -2,15 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// https://docs.unity3d.com/ScriptReference/RequireComponent.html
+[RequireComponent (typeof (Character))]
 public class AbilityBaseClass : MonoBehaviour
 {
     //protected string ability_name = "";
     //protected System.Type script_type = null;
-    protected List<Trait> traits = new List<Trait> ();
+    protected Character character;
+    protected Dictionary<string, int> Intensity = new Dictionary<string, int> { };
 
     public string Name { get => (this.GetType ()).ToString (); }
     //public System.Type ScriptType { get => script_type; }
-    public List<Trait> Traits { get => traits; }
+    //public List<Trait> Traits { get => traits; }
+
+    public virtual void Start ()
+    {
+        character = GetComponent<Character> ();
+        //Intensity = character.Genome.getTraitIntensities (new List<string> () { "abc", "def" });
+    }
+
+    
+
+
+
 
     /*
     /// <summary>
@@ -26,13 +40,13 @@ public class AbilityBaseClass : MonoBehaviour
         traits = GameCore.Instance.GameVariables.getTraits (requested_traits);
     }*/
 
-    public void addTraits ( Trait new_trait )
-    {
-        traits.Add (new_trait);
-    }
+    //public void addTraits ( Trait new_trait )
+    //{
+    //    traits.Add (new_trait);
+    //}
 
-    public void addTraits ( List<Trait> new_traits )
-    {
-        traits.AddRange (new_traits);
-    }
+    //public void addTraits ( List<Trait> new_traits )
+    //{
+    //    traits.AddRange (new_traits);
+    //}
 }

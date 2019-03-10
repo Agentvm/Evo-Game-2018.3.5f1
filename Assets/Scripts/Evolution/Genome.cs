@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
-
+using System.Linq;
 
 // Class that contains "genetic" information
 //                   ________________________________________________
@@ -12,101 +11,6 @@ using UnityEngine.Assertions;
 // Genome.Traits > TraitManifestation > ManifestationSegment
 public class Genome {
     
-    // class 
-    private class ManifestationSegment {
-        public int position;
-        public int length; 
-
-        public ManifestationSegment (int pos, int len )
-        {
-            position = pos;
-            length = len;
-        }
-    }
-    
-    // class
-    private class TraitManifestation {
-        
-        private Trait trait;
-        private List<ManifestationSegment> segments;
-        private int intensity;   
-        
-        // Properties
-        public int Start { get => Segments[0].position; }
-        public Trait Trait { get => trait; set => trait = value; }
-        private List<ManifestationSegment> Segments { get => segments; set => segments = value; }
-        public int Intensity { get => intensity; set => intensity = value; }
-
-        public TraitManifestation (Trait given_trait, int position, int intensity)
-        {
-            segments = new List<ManifestationSegment> ();
-            Trait = given_trait;
-            Intensity = intensity;
-            Segments.Add (new ManifestationSegment (position, Trait.Length));
-        }
-        
-        public TraitManifestation (Trait given_trait, int position, List<bool> genome_string)
-        {
-            segments = new List<ManifestationSegment> ();
-            Trait = given_trait;
-            Segments.Add (new ManifestationSegment (position, Trait.Length ));
-            updateIntensityStatus (genome_string );
-        }
-        
-        /*
-        public TraitManifestation (Trait given_trait, IDictionary<int, int> positions_and_lengths, List<bool> genome_string)
-        {
-            Trait = given_trait;
-            //Segments.Add (new ManifestationSegment (position, Trait.Length));
-            updateIntensityStatus (genome_string );
-        }*/
-        
-        public void updateIntensityStatus (List<bool> genome_string )
-        {
-            //Debug.Log ("Getting relevant genes for Trait " + Trait.Name);
-            Intensity = Trait.IntensityStatus (getRelevantGenes (genome_string ));
-        }
-        
-        private List<bool> getRelevantGenes (List<bool> genome_string )
-        {
-            List<bool> relevant_genes = new List<bool> ();
-            foreach (ManifestationSegment segment in Segments )
-            {
-                //Debug.Log ("genome_string.Count: " + genome_string.Count );
-                //Debug.Log ("segment.length: " + segment.length);
-                //Debug.Log ("segment.pos: " + segment.position );
-
-                //if (segment.position + segment.length > genome_string.Count ) // segment is out of genome bounds
-                //{
-                for (int i = 0; i < segment.length; i++) // progress gene per gene
-                {
-                    //Debug.Log ("i: " + i );
-                    //Debug.Log ("if (" + segment.position + " + "+i+" > "+genome_string.Count+") ");
-                    if (segment.position + i >= genome_string.Count) // wrap
-                    {
-                        //Debug.Log ("wrapping, Add genome_string[" + segment.position + " + " + i + " - " + genome_string.Count + "]");
-                        relevant_genes.Add (genome_string[segment.position + i - genome_string.Count]); // start again at the beginning of genome
-                    }
-                    // still in bounds (segment starts inbounds but is too long)
-                    else
-                    {
-                        //Debug.Log ("in bounds, Add genome_string[" + segment.position + " + " + i + "]");
-                        relevant_genes.Add (genome_string[segment.position + i]);
-                    }
-                }
-
-                //}
-                //else relevant_genes.AddRange (genome_string.Range (segment.position, segment.length) );
-            }
-
-            if ( relevant_genes.Count != Trait.Length )
-                Debug.LogError ("Assertion failed. Relevant genes length does not match Lenght of Trait " + Trait.Name + ".");
-            return relevant_genes;
-        }
-        
-        
-    }
-
     // Variables
     private List<bool> genome_string;
     private List<TraitManifestation> trait_manifestations = new List<TraitManifestation> ();
@@ -175,16 +79,44 @@ public class Genome {
         trait_manifestations.Add (new TraitManifestation (trait, position_in_genome, genome_string ));
     }
 
+
     private List<Trait> getTraits ()
     {
         List<Trait> all_traits = new List<Trait> ();
-        foreach (TraitManifestation manifestation in trait_manifestations )
+        foreach ( TraitManifestation manifestation in trait_manifestations )
         {
             all_traits.Add (manifestation.Trait);
         }
 
         return all_traits;
     }
+
+
+    public Dictionary<string, int> getTraitIntensities (List<string> requested_trait_names_raw )
+    {
+        List<string> requested_trait_names = requested_trait_names_raw.Distinct ().ToList (); // remove duplicates
+
+        Dictionary<string, int> trait_names_and_intensities = new Dictionary<string, int> { };
+        foreach ( string requested_trait_name in requested_trait_names )
+        {
+            bool found = false;
+            foreach ( TraitManifestation manifestation in trait_manifestations )
+            {
+                if (manifestation.Trait.Name == requested_trait_name )
+                {
+                    trait_names_and_intensities.Add (manifestation.Trait.Name, manifestation.Intensity );
+                    found = true;
+                    break; // the inner foreach
+                }
+            }
+
+            if ( !found ) Debug.LogWarning ("The Trait " + requested_trait_name + " could not be found in " + this.GetType ().ToString () + ".");
+        }
+
+        return trait_names_and_intensities;
+    }
+
+
     /*
     /// <summary>
     /// 

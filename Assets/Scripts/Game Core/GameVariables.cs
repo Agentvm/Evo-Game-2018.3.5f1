@@ -7,7 +7,7 @@ public class GameVariables : MonoBehaviour
 {
     private double game_ticks = 0;
     private List<Trait> available_traits = new List<Trait> ();
-    private IDictionary<AbilityBaseClass, List<Trait>> abilities_and_traits; // !! this is not instantiated
+    //private Dictionary<AbilityBaseClass, List<Trait>> abilities_and_traits = new Dictionary<AbilityBaseClass, List<Trait>>;
 
 
     public List<Trait> AvailableTraits { get => available_traits; }
