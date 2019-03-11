@@ -9,7 +9,8 @@ public class AbilityBaseClass : MonoBehaviour
     //protected string ability_name = "";
     //protected System.Type script_type = null;
     protected Character character;
-    protected Dictionary<string, int> Intensity = new Dictionary<string, int> { };
+    //protected Dictionary<string, int> Intensity = new Dictionary<string, int> { };
+    protected Dictionary<string, TraitManifestation> TraitManifestation = new Dictionary<string, TraitManifestation> { }; // for trait acess
 
     public string Name { get => (this.GetType ()).ToString (); }
     //public System.Type ScriptType { get => script_type; }

@@ -14,7 +14,7 @@ public class Genome {
     // Variables
     private List<bool> genome_string;
     private List<TraitManifestation> trait_manifestations = new List<TraitManifestation> ();
-    private List<int> past_mutations = new List<int> (); // rather fits in species
+    //private List<int> past_mutations = new List<int> (); // rather fits in species
     private float mutation_scale = 1.0f;
 
     
@@ -23,7 +23,7 @@ public class Genome {
     public List<bool> GenomeString { get => genome_string;/* set => genome_string = value;*/ }
     public int Length {get => GenomeString.Count;}
     public List<Trait> Traits { get => getTraits (); }
-    public List<int> PastMutations { get => past_mutations;/* set => genome_string = value;*/ }
+    //public List<int> PastMutations { get => past_mutations;/* set => genome_string = value;*/ }
     public float MutationScale { get => mutation_scale; set => mutation_scale = value; }
 
     
@@ -56,7 +56,8 @@ public class Genome {
             if (Random.Range(1, Mathf.Ceil (genome_string.Count * (1/MutationScale))) == 1 )
             {
                 genome_string[i] = !genome_string[i];
-                PastMutations.Add (i);
+                //if (!PastMutations.Contains (i))
+                //    PastMutations.Add (i);
             }
         }
     }
@@ -64,7 +65,7 @@ public class Genome {
     public void addTrait ( Trait trait )
     {
         // if trait is already in this genome, abort
-        foreach (TraitManifestation manifestation in trait_manifestations) if (manifestation.Trait.Name == trait.Name) return;
+        foreach (TraitManifestation manifestation in trait_manifestations) if (manifestation.Name == trait.Name) return;
         
         // the trait is added at a random position in the genome
         int pos = Random.Range (0, GenomeString.Count);
@@ -74,7 +75,7 @@ public class Genome {
     public void addTrait ( Trait trait, int position_in_genome )
     {
         // if trait is already in this genome, abort
-        foreach ( TraitManifestation manifestation in trait_manifestations ) if ( manifestation.Trait.Name == trait.Name ) return;
+        foreach ( TraitManifestation manifestation in trait_manifestations ) if ( manifestation.Name == trait.Name ) return;
 
         trait_manifestations.Add (new TraitManifestation (trait, position_in_genome, genome_string ));
     }
@@ -92,7 +93,7 @@ public class Genome {
     }
 
 
-    public Dictionary<string, int> getTraitIntensities (List<string> requested_trait_names_raw )
+    public Dictionary<string, int> getTraitIntensities ( List<string> requested_trait_names_raw )
     {
         List<string> requested_trait_names = requested_trait_names_raw.Distinct ().ToList (); // remove duplicates
 
@@ -102,9 +103,9 @@ public class Genome {
             bool found = false;
             foreach ( TraitManifestation manifestation in trait_manifestations )
             {
-                if (manifestation.Trait.Name == requested_trait_name )
+                if ( manifestation.Name == requested_trait_name )
                 {
-                    trait_names_and_intensities.Add (manifestation.Trait.Name, manifestation.Intensity );
+                    trait_names_and_intensities.Add (manifestation.Name, manifestation.Intensity);
                     found = true;
                     break; // the inner foreach
                 }
@@ -114,6 +115,35 @@ public class Genome {
         }
 
         return trait_names_and_intensities;
+    }
+
+    /// <summary>
+    /// Returns a Dictionary of Names and respective Trait Manifestations. With these, all trait Attributes are 
+    /// </summary>
+    /// <param name="requested_trait_names_raw"></param>
+    /// <returns></returns>
+    public Dictionary<string, TraitManifestation> getTraitManifestations ( List<string> requested_trait_names_raw )
+    {
+        List<string> requested_trait_names = requested_trait_names_raw.Distinct ().ToList (); // remove duplicates
+
+        Dictionary<string, TraitManifestation> trait_names_and_manifestations = new Dictionary<string, TraitManifestation> { };
+        foreach ( string requested_trait_name in requested_trait_names )
+        {
+            bool found = false;
+            foreach ( TraitManifestation manifestation in trait_manifestations )
+            {
+                if ( manifestation.Name == requested_trait_name )
+                {
+                    trait_names_and_manifestations.Add (manifestation.Name, manifestation);
+                    found = true;
+                    break; // the inner foreach
+                }
+            }
+
+            if ( !found ) Debug.LogWarning ("The Trait " + requested_trait_name + " could not be found in " + this.GetType ().ToString () + ".");
+        }
+
+        return trait_names_and_manifestations;
     }
 
 

@@ -8,11 +8,14 @@ public class Character : MonoBehaviour {
 
     private Genome genome;
     private SpriteRenderer sprite;
+    private bool initialized = false;
     //private float size;
 
     // Properties
     public Genome Genome { get => genome; }
     public List<Trait> Traits { get => genome.Traits; }
+    public bool Initialized { get => initialized; } // Are a genom and all necessary traits attatched?
+
     //public float Size { get => size;}
     //public Color Color { get => color; }
 
@@ -57,11 +60,15 @@ public class Character : MonoBehaviour {
         {
             foreach (Trait new_trait in new_traits)
                 Genome.addTrait (new_trait); // random trait positions in genome
-        }        
+        }
         //genome.updateIntensities (); // check if Traits are currently active (is done implicitly)
-        
+
 
         // add abilities (request list of abilities for this Constructor?)
+
+
+
+
         //foreach ( Trait trait in genome.Traits )
         //{
         //    // Add Behaviour Script to gameobject
@@ -72,6 +79,7 @@ public class Character : MonoBehaviour {
         //}
 
         // Start will be called next
+        //initialized = true;
     }
 
     void setColorbyGenome ()

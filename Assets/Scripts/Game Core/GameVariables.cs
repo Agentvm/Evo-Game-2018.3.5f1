@@ -9,6 +9,7 @@ public class GameVariables : MonoBehaviour
     private List<Trait> available_traits = new List<Trait> ();
     //private Dictionary<AbilityBaseClass, List<Trait>> abilities_and_traits = new Dictionary<AbilityBaseClass, List<Trait>>;
 
+    private bool delete_this = false;
 
     public List<Trait> AvailableTraits { get => available_traits; }
     //public IDictionary<AbilityBaseClass, List<Trait>> AbilitiesAndTraits { get => abilities_and_traits;}
@@ -27,17 +28,55 @@ public class GameVariables : MonoBehaviour
         //available_abilities.Add (new Ability ("GrowLeaves", new List<string> () { "MaxSize", "GrowRate", "LeavesDensity" }));
         //available_abilities.Add (new Ability ("CollectLight"
 
-        // initialise the first few individual Characters
-        List<Character> adams_and_eves = new List<Character> ();
-        foreach ( GameObject obj in GameObject.FindGameObjectsWithTag ("Origin") ) // ToDo: don't use Origin Tag, use Instantiate
-        {
-            if ( obj.GetComponent<Character> () == null)
-                obj.AddComponent<Character> ();
-            Character character_script = obj.GetComponent<Character> ();
-            character_script.initialize (new Genome (), getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */} ));
-            adams_and_eves.Add (character_script);
-        }
 
+        Debug.Log ("Waiting.");
+        StartCoroutine (waitForInitialization ());
+
+
+        
+
+
+        Debug.Log ("delete_this: " + delete_this);
+    }
+
+    private IEnumerator waitForInitialization ()
+    {
+        //https://answers.unity.com/questions/304394/have-a-function-to-wait-until-true.html
+        //yield return new WaitUntil (() => delete_this == true); // Why would you make it understandable while you can use some obscure lambda expression?
+        yield return new WaitUntil (() => delete_this == true);
+        //while ( !delete_this )
+        //    yield return null;
+
+        
+
+        //Intensity = character.Genome.getTraitIntensities (new List<string> () { "MaxSize", "GrowRate" });
+
+        //max_size_intensity = Traits[0].IntensityStatus (character.Genome.GenomeString); // initialize character zero via GameVariables (FindGameObjectsWithTag)
+
+
+
+
+        // initialise the first few individual Characters
+        GameObject character_one = (GameObject)Instantiate(Resources.Load("Cell"), new Vector3 (0f, 0f, -0.2f), new Quaternion (0f, 0f, 0f, 1f) );
+        Character character_script_reference = character_one.GetComponent<Character> ();
+        character_script_reference.initialize (new Genome (), getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */}));
+
+        Debug.Log ("Done.");
+
+        //List<Character> adams_and_eves = new List<Character> ();
+        //foreach ( GameObject obj in GameObject.FindGameObjectsWithTag ("Origin") ) // ToDo: don't use Origin Tag, use Instantiate
+        //{
+        //    if ( obj.GetComponent<Character> () == null )
+        //        obj.AddComponent<Character> ();
+        //    Character character_script = obj.GetComponent<Character> ();
+        //    character_script.initialize (new Genome (), getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */}));
+        //    adams_and_eves.Add (character_script);
+        //}
+    }
+
+    public void setDeleteThisTrue ()
+    {
+        delete_this = true;
     }
 
     /*{

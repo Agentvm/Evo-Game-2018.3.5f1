@@ -23,29 +23,34 @@ public class TraitManifestation
     private int intensity;
 
     // Properties
-    public int Start { get => Segments[0].position; }
-    public Trait Trait { get => trait; set => trait = value; }
-    private List<ManifestationSegment> Segments { get => segments; set => segments = value; }
-    public int Intensity { get => intensity; set => intensity = value; }
+    // expose trait Attributes so this can be easily read by Ability Scripts
+    public Trait Trait { get => trait; /*set => trait = value;*/ }
+    public int Intensity { get => intensity; }
+    public int Length { get => trait.Length; }
+    public string Name { get => trait.Name; }
+    public int Start { get => segments[0].position; }
+    //private List<ManifestationSegment> Segments { get => segments;/* set => segments = value;*/ }
 
-    public TraitManifestation ( Trait given_trait, int position, int intensity )
+    
+
+    public TraitManifestation ( Trait given_trait, int position, int given_intensity )
     {
         segments = new List<ManifestationSegment> ();
-        Trait = given_trait;
-        Intensity = intensity;
-        Segments.Add (new ManifestationSegment (position, Trait.Length));
+        trait = given_trait;
+        intensity = given_intensity;
+        segments.Add (new ManifestationSegment (position, Length)); // no splitting of segments implemented, though it is possible
     }
 
     public TraitManifestation ( Trait given_trait, int position, List<bool> genome_string )
     {
         segments = new List<ManifestationSegment> ();
-        Trait = given_trait;
-        Segments.Add (new ManifestationSegment (position, Trait.Length));
-        updateIntensityStatus (genome_string);
+        trait = given_trait;
+        segments.Add (new ManifestationSegment (position, Length)); // no splitting of segments implemented, though it is possible
+        updateIntensityStatus (genome_string );
     }
 
     /*
-    public TraitManifestation (Trait given_trait, IDictionary<int, int> positions_and_lengths, List<bool> genome_string)
+    public TraitManifestation (Trait given_trait, Dictionary<int, int> positions_and_lengths, List<bool> genome_string)
     {
         Trait = given_trait;
         //Segments.Add (new ManifestationSegment (position, Trait.Length));
@@ -55,13 +60,13 @@ public class TraitManifestation
     public void updateIntensityStatus ( List<bool> genome_string )
     {
         //Debug.Log ("Getting relevant genes for Trait " + Trait.Name);
-        Intensity = Trait.IntensityStatus (getRelevantGenes (genome_string));
+        intensity = trait.IntensityStatus (getRelevantGenes (genome_string));
     }
 
     private List<bool> getRelevantGenes ( List<bool> genome_string )
     {
         List<bool> relevant_genes = new List<bool> ();
-        foreach ( ManifestationSegment segment in Segments )
+        foreach ( ManifestationSegment segment in segments )
         {
             //Debug.Log ("genome_string.Count: " + genome_string.Count );
             //Debug.Log ("segment.length: " + segment.length);
@@ -90,8 +95,8 @@ public class TraitManifestation
             //else relevant_genes.AddRange (genome_string.Range (segment.position, segment.length) );
         }
 
-        if ( relevant_genes.Count != Trait.Length )
-            Debug.LogError ("Assertion failed. Relevant genes length does not match Lenght of Trait " + Trait.Name + ".");
+        if ( relevant_genes.Count != Length )
+            Debug.LogError ("Assertion failed. Relevant genes length does not match Lenght of Trait " + Name + ".");
         return relevant_genes;
     }
 
