@@ -137,7 +137,7 @@ public class OrbitCameraZoom : MonoBehaviour
             slerp_coroutine_script.setTarget (Target.position, Target.rotation);
         }
 
-        ////////Orbit Position
+        // Zoom in on current Mouse position (SupCom Style)
         if ( Input.GetAxis ("Mouse ScrollWheel") > 0f && Time.time > lock_time + scroll_click_delay ) // scrolling in
         {
             //Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane)), Vector3.up);
@@ -154,8 +154,13 @@ public class OrbitCameraZoom : MonoBehaviour
             lock_time = Time.time;
 
         }
+        else if ( desiredDistance >= maxDistance ) // If zoomed out max, center camera
+        {
+            Target.Translate (new Vector3 (0f, 0f, 0f) - Target.position * 0.1f);
+            slerp_coroutine_script.setTarget (Target.position, Target.rotation);
+        }
 
-        
+
 
         // affect the desired Zoom distance if we roll the scrollwheel
         desiredDistance -= Input.GetAxis ("Mouse ScrollWheel") * Time.deltaTime * zoomRate * Mathf.Abs (desiredDistance) * 0.01f * currentDistance;
@@ -163,6 +168,7 @@ public class OrbitCameraZoom : MonoBehaviour
         desiredDistance = Mathf.Clamp (desiredDistance, MinDistance, MaxDistance);
         // For smoothing of the zoom, lerp distance
         currentDistance = Mathf.Lerp (currentDistance, desiredDistance, Time.deltaTime * zoomDampening);
+        
 
         // calculate position based on the new currentDistance 
         position = Vector3.Lerp (transform.position, (Target.position - (rotation * Vector3.forward * currentDistance/* + targetOffset*/)), Time.deltaTime * 1.2f * zoomDampening );

@@ -16,15 +16,31 @@ public class AbilityBaseClass : MonoBehaviour
     //public System.Type ScriptType { get => script_type; }
     //public List<Trait> Traits { get => traits; }
 
-    public virtual void Start ()
+    protected virtual void Start ()
     {
         character = GetComponent<Character> ();
+        StartCoroutine (waitForInitialization ());
         //Intensity = character.Genome.getTraitIntensities (new List<string> () { "abc", "def" });
     }
 
-    
+    protected IEnumerator waitForInitialization ()
+    {
+        yield return new WaitUntil (() => character.Initialized == true);
 
+        // if character has been initialized, get the traits you need
+        evaluateIntensity ();
+    }
 
+    public virtual void evaluateIntensity ()
+    {
+        TraitManifestation = character.Genome.getTraitManifestations (new List<string> () { });
+
+        // calculate the values that remain fixed
+        // ...
+    }
+
+    public virtual void Tick ()
+    { }
 
 
     /*

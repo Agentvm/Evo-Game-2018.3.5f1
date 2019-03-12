@@ -6,11 +6,10 @@ using UnityEngine;
 public class GameVariables : MonoBehaviour
 {
     private double game_ticks = 0;
+    public GameObject map;
     private List<Trait> available_traits = new List<Trait> ();
+    private Dictionary<GameObject, List<AbilityBaseClass>> individuals_lexicon = new Dictionary<GameObject, List<AbilityBaseClass>> ();
     //private Dictionary<AbilityBaseClass, List<Trait>> abilities_and_traits = new Dictionary<AbilityBaseClass, List<Trait>>;
-
-    private bool delete_this = false;
-
     public List<Trait> AvailableTraits { get => available_traits; }
     //public IDictionary<AbilityBaseClass, List<Trait>> AbilitiesAndTraits { get => abilities_and_traits;}
 
@@ -28,40 +27,58 @@ public class GameVariables : MonoBehaviour
         //available_abilities.Add (new Ability ("GrowLeaves", new List<string> () { "MaxSize", "GrowRate", "LeavesDensity" }));
         //available_abilities.Add (new Ability ("CollectLight"
 
-
-        Debug.Log ("Waiting.");
-        StartCoroutine (waitForInitialization ());
-
-
-        
-
-
-        Debug.Log ("delete_this: " + delete_this);
     }
 
-    private IEnumerator waitForInitialization ()
+    // find all gameobjects that are individuals capable of evolution, and their abilities
+    private void updateIndividuumLexicon ()
     {
-        //https://answers.unity.com/questions/304394/have-a-function-to-wait-until-true.html
-        //yield return new WaitUntil (() => delete_this == true); // Why would you make it understandable while you can use some obscure lambda expression?
-        yield return new WaitUntil (() => delete_this == true);
-        //while ( !delete_this )
-        //    yield return null;
+        // Find all Gameobjects of Interest
+        List<GameObject> all_individuals = new List<GameObject> ();
+        all_individuals.AddRange (GameObject.FindGameObjectsWithTag ("Evolving" ));
 
-        
+        foreach (GameObject individuum in all_individuals )
+        {
+            if ( !individuals_lexicon.ContainsKey (individuum) )
+            {
+                individuals_lexicon.Add (individuum, new List<AbilityBaseClass> (individuum.GetComponents<AbilityBaseClass> () ));
+            }
+        }
+    }
 
-        //Intensity = character.Genome.getTraitIntensities (new List<string> () { "MaxSize", "GrowRate" });
+    public void gameTick ( int times = 1 )
+    {
+        updateIndividuumLexicon ();
+        Debug.Log ("The Lexicon has " + individuals_lexicon.Count + " entries.");
 
-        //max_size_intensity = Traits[0].IntensityStatus (character.Genome.GenomeString); // initialize character zero via GameVariables (FindGameObjectsWithTag)
+        for ( int a = 0; a < times; a++ )
+        {
+            // Iterate over all values of the lexicon (all abilities) and call tick, executing whatever the ability does, once.
+            foreach ( List<AbilityBaseClass> abilities in individuals_lexicon.Values )
+                foreach ( AbilityBaseClass ability in abilities )
+                    ability.Tick ();
+        }
+    }
 
+    public void spawnTwoCells ()
+    {
+        Vector3 spawn_point = RandomPointOnPlane (map );
 
+        // make tehm similar
+        Genome genome1 = new Genome ();
+        Genome genome2 = genome1;
+        genome1.mutate ();
+        genome2.mutate ();
 
+        // initialise a basic individual Character
+        GameObject character = (GameObject)Instantiate(Resources.Load("Cell" ), spawn_point, new Quaternion (0f, 0f, 0f, 1f ));
+        Character character_script_reference = character.GetComponent<Character> ();
+        character_script_reference.initialize (genome1, getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */}));
+        individuals_lexicon.Add (character, new List<AbilityBaseClass> (character.GetComponents<AbilityBaseClass> ()));
 
-        // initialise the first few individual Characters
-        GameObject character_one = (GameObject)Instantiate(Resources.Load("Cell"), new Vector3 (0f, 0f, -0.2f), new Quaternion (0f, 0f, 0f, 1f) );
-        Character character_script_reference = character_one.GetComponent<Character> ();
-        character_script_reference.initialize (new Genome (), getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */}));
-
-        Debug.Log ("Done.");
+        character = (GameObject)Instantiate(Resources.Load("Cell" ), spawn_point + new Vector3 (Random.value * 5f, Random.value * 5f, 0f), new Quaternion (0f, 0f, 0f, 1f ));
+        character_script_reference = character.GetComponent<Character> ();
+        character_script_reference.initialize (genome2, getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */}));
+        individuals_lexicon.Add (character, new List<AbilityBaseClass> (character.GetComponents<AbilityBaseClass> ()));
 
         //List<Character> adams_and_eves = new List<Character> ();
         //foreach ( GameObject obj in GameObject.FindGameObjectsWithTag ("Origin") ) // ToDo: don't use Origin Tag, use Instantiate
@@ -69,14 +86,29 @@ public class GameVariables : MonoBehaviour
         //    if ( obj.GetComponent<Character> () == null )
         //        obj.AddComponent<Character> ();
         //    Character character_script = obj.GetComponent<Character> ();
-        //    character_script.initialize (new Genome (), getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */}));
+        //    character_script.initialize (new Genome (), getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */} ));
         //    adams_and_eves.Add (character_script);
         //}
     }
 
-    public void setDeleteThisTrue ()
+    public Vector3 RandomPointOnPlane (GameObject plane_with_mesh_collider )
     {
-        delete_this = true;
+        // get mesh bounds
+        Mesh planeMesh = plane_with_mesh_collider.GetComponent<MeshFilter>().mesh;
+        Bounds bounds = planeMesh.bounds;
+        bounds.size *= 0.95f; // clear borders
+
+        // compute x and y bounds in world space
+        float minX = plane_with_mesh_collider.transform.position.x - plane_with_mesh_collider.transform.localScale.x * bounds.size.x * 0.5f;
+        float minY = plane_with_mesh_collider.transform.position.z - plane_with_mesh_collider.transform.localScale.z * bounds.size.z * 0.5f;
+
+        // make a new vector on a plane which lies in x and y direction (this would be nice if things did clip to the plane)
+        Vector3 newVec = new Vector3(Random.Range (minX, -minX),
+                                    Random.Range (minY, -minY),
+                                    plane_with_mesh_collider.transform.position.y - 0.2f
+                                    );
+
+        return newVec;
     }
 
     /*{

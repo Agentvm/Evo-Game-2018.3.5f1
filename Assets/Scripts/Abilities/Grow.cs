@@ -2,67 +2,69 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Character))]
+[RequireComponent (typeof (Character))]
 public class Grow : AbilityBaseClass
 {
-
-    // quasi - enum to enumerate traits for quick look up
-    //private Trait MaxSize { get => Traits[0]; }
-    //private Trait GrowRate { get => Traits[1]; }
-
-
-
-    private int max_age = 10;
+    private float size = 1f;
+    float max_size;
+    float growth_per_tick; // game tick
 
     // Start is called before the first frame update
-    override public void Start()
+    override protected void Start ()
     {
-        base.Start (); // character = GetComponent<Character> ();
-
-        //
-
-        
-        
-
-        
-
-        //Intensity = character.Genome.getTraitIntensities (new List<string> () { "MaxSize", "GrowRate" });
-
-        //max_size_intensity = Traits[0].IntensityStatus (character.Genome.GenomeString); // initialize character zero via GameVariables (FindGameObjectsWithTag)
-
+        // gets character component and starts coroutine that calls evaluateIntensity as soon as character is fully initialized
+        base.Start ();
     }
 
-    public void Update ()
+    // get Intensity values and compute 
+    override public void evaluateIntensity ()
     {
-        StartCoroutine (waitForInitialization ());
-    }
-
-    private IEnumerator waitForInitialization ()
-    {
-        //https://answers.unity.com/questions/304394/have-a-function-to-wait-until-true.html
-        //yield return new WaitUntil (() => character.Initialized == true); // Why would you make it understandable while you can use some obscure lambda expression?
-        yield return new WaitUntil (() => character.Initialized == true);
-        //while ( !character.Initialized )
-
-        We never arrive here!
-
-        Debug.Log ("Wait is Over.");
-
         TraitManifestation = character.Genome.getTraitManifestations (new List<string> () { "MaxSize", "GrowRate" });
 
-        foreach ( TraitManifestation t in TraitManifestation.Values )
-        {
-            Debug.Log ("Trait: " + t.Name);
-        }
+        // calculate the values that remain fixed
+        // MaxSize
+        float relative_max_size = (float)TraitManifestation["MaxSize"].Intensity / (float)TraitManifestation["MaxSize"].Length;
+        max_size = Mathf.Pow (2, (float)relative_max_size + 1f); // rises exponentially: 10 to the power of 1f - 2f
+
+        // GrowRate
+        float relative_rate_of_growth = (float)TraitManifestation["GrowRate"].Intensity / (float)TraitManifestation["GrowRate"].Length;
+        // min rate = 400^1 / 400^2 = 0,0025 --> 100 years to full growth | max rate = 400^2 / 400^2 = 1 --> 1 Season to full growth | mean rate = 400^1.5 / 400^2 = 0.05 --> 5 Years to full growth
+        float normalized_rate_of_growth  =  Mathf.Pow (400f, 1f + (float)relative_rate_of_growth) / (float)(400f*400f);
+        growth_per_tick = normalized_rate_of_growth * max_size;
+
+        Debug.Log ("Genome = " + printGenome (character.Genome));
+        Debug.Log ("TraitManifestation[MaxSize].Intensity = " + TraitManifestation["MaxSize"].Intensity);
+        Debug.Log ("TraitManifestation[GrowRate].Intensity = " + TraitManifestation["GrowRate"].Intensity);
+
+        // make babies bigger
+        size = 0.1f * max_size;
+        this.transform.localScale = new Vector3 (size, size, size); // should min_size be 1 ?
     }
 
-    public void Tick ()
+
+    // helper function that does not belong here
+    private string printGenome (Genome genome )
     {
-        /*if ( Intensity["MaxSize"] > 8 )
+        string str = "";
+
+        foreach (bool b in genome.GenomeString)
         {
-            // Mathf.Pow(2,
-            float scalar = Intensity["MaxSize"] / MaxSize.Length // / (max_age / 3f);
-            transform.localScale.Scale (new Vector3 (1f, 1f, 1f));
-        }*/
+            if ( b ) str += "1";
+            else str += 0;
+        }
+
+        return str;
+    }
+
+    // make Changes to the game. One Tick is one unit of time, let's say one season.
+    override public void Tick ()
+    {
+        if (size < max_size )
+        {
+            // sprites are sized 1, 1, 1
+            size = Mathf.Min (max_size, size + growth_per_tick );
+            this.transform.localScale = new Vector3 (size, size, size); // should min_size be 1 ?
+        }
+        
     }
 }

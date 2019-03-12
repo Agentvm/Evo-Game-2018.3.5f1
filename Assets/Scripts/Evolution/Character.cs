@@ -79,7 +79,7 @@ public class Character : MonoBehaviour {
         //}
 
         // Start will be called next
-        //initialized = true;
+        initialized = true;
     }
 
     void setColorbyGenome ()

@@ -21,6 +21,7 @@
  - (check) Color Problem (Color Genom should mirror certain genes of the main Genom)
  - Use Instantiate instead of FindObjectsWithTag
  - Debug GameVariables.getTraits // Warning does never fire
+ - scaling thoughts
 
  --- Verbesserungen -----------------------------
  
