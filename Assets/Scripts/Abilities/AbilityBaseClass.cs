@@ -2,35 +2,47 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// https://docs.unity3d.com/ScriptReference/RequireComponent.html
+/*
+ * 
+ * Base class for Character Abilities.
+ * Abilities are attached to a GameObject (an Individuum, e.g. an animal or plant) to execute all stuff directly related to changes in game.
+ * Examples of this are Eating, Growing, Mating.
+ * 
+ */
+ // https://docs.unity3d.com/ScriptReference/RequireComponent.html
 [RequireComponent (typeof (Character))]
 public class AbilityBaseClass : MonoBehaviour
 {
-    //protected string ability_name = "";
-    //protected System.Type script_type = null;
-    protected Character character;
-    //protected Dictionary<string, int> Intensity = new Dictionary<string, int> { };
-    protected Dictionary<string, TraitManifestation> TraitManifestation = new Dictionary<string, TraitManifestation> { }; // for trait acess
+    // Variables
+    protected Character character; // reference to the Character script attached to the same GameObject
+    protected Dictionary<string, TraitManifestation> TraitManifestation = new Dictionary<string, TraitManifestation> { }; // for Trait access
 
+    // Properties
     public string Name { get => (this.GetType ()).ToString (); }
-    //public System.Type ScriptType { get => script_type; }
-    //public List<Trait> Traits { get => traits; }
+
 
     protected virtual void Start ()
     {
-        character = GetComponent<Character> ();
-        StartCoroutine (waitForInitialization ());
-        //Intensity = character.Genome.getTraitIntensities (new List<string> () { "abc", "def" });
+        character = GetComponent<Character> (); // get reference
+        StartCoroutine (waitForInitialization ()); // Start a waiting coroutine
     }
 
+
+    /// <summary>
+    /// Waits until the character that this Ability belongs to has initialized all his Traits.
+    /// </summary>
     protected IEnumerator waitForInitialization ()
     {
-        yield return new WaitUntil (() => character.Initialized == true);
+        yield return new WaitUntil (() => character.TraitsInitialized == true);
 
         // if character has been initialized, get the traits you need
         evaluateIntensity ();
     }
 
+
+    /// <summary>
+    /// Initialization method of this Class (Because Constructors don't work for MonoBehaviours). Retrieves all Traits this Ability is based on, then calculates all constant values that follow of these.
+    /// </summary>
     public virtual void evaluateIntensity ()
     {
         TraitManifestation = character.Genome.getTraitManifestations (new List<string> () { });
@@ -39,31 +51,11 @@ public class AbilityBaseClass : MonoBehaviour
         // ...
     }
 
+
+    /// <summary>
+    /// Implements actions that are executed each game step and change this Individuum (GameObject) or other Individuals
+    /// </summary>
     public virtual void Tick ()
     { }
 
-
-    /*
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    // <param name="ability_name">Must exactly match the Type of the actual Script doing the Computations that gets attached to a sCharacter.</param>
-    /// <param name="requested_traits">Traits, that are vital for this ability</param>
-    public AbilityBaseClass ( List<string> requested_traits )
-    {
-        //ability_name = (this.GetType ()).ToString ();
-        //if ( System.Type.GetType (ability_name) == null ) Debug.LogError ("No MonoBehaviour Script named " + ability_name + " has been found.");
-        //script_type = System.Type.GetType (ability_name);
-        traits = GameCore.Instance.GameVariables.getTraits (requested_traits);
-    }*/
-
-    //public void addTraits ( Trait new_trait )
-    //{
-    //    traits.Add (new_trait);
-    //}
-
-    //public void addTraits ( List<Trait> new_traits )
-    //{
-    //    traits.AddRange (new_traits);
-    //}
 }

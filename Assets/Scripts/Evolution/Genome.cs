@@ -15,19 +15,20 @@ public class Genome {
     private List<bool> genome_string;
     private List<TraitManifestation> trait_manifestations = new List<TraitManifestation> ();
     //private List<int> past_mutations = new List<int> (); // rather fits in species
-    private float mutation_scale = 1.0f;
+    private float mutation_scale = 1.0f; // how likely is this genome altered when mutating
 
     
     // Properties
-    //public List<TraitManifestation> Trait_Manifestations { get => trait_manifestations; /*set => traits = value;*/ }
     public List<bool> GenomeString { get => genome_string;/* set => genome_string = value;*/ }
     public int Length {get => GenomeString.Count;}
-    public List<Trait> Traits { get => getTraits (); }
+    //public List<Trait> Traits { get => getTraits (); } // currently not necessary
     //public List<int> PastMutations { get => past_mutations;/* set => genome_string = value;*/ }
     public float MutationScale { get => mutation_scale; set => mutation_scale = value; }
 
-    
-    /// Constructor
+
+    /// <summary>
+    /// Constructor for a randomized genome.
+    /// </summary>
     public Genome (int length = 30)
     {
         // Fill Genome with random values
@@ -37,6 +38,7 @@ public class Genome {
     
     
     // Functions
+
     /// <summary>
     /// Update the Intensity of every Trait in this genome (to see if, and to which degree it is active)
     /// </summary>
@@ -47,7 +49,11 @@ public class Genome {
             manifestation.updateIntensityStatus (genome_string);
         }
     }
+
     
+    /// <summary>
+    /// Alters the genome_string. This is set to occur before birth. 
+    /// </summary>
     public void mutate ()
     {
         for (int i = 0; i < genome_string.Count; i++)
@@ -62,6 +68,10 @@ public class Genome {
         }
     }
     
+
+    /// <summary>
+    /// Add a Trait to this Genome.
+    /// </summary>
     public void addTrait ( Trait trait )
     {
         // if trait is already in this genome, abort
@@ -71,7 +81,11 @@ public class Genome {
         int pos = Random.Range (0, GenomeString.Count);
         trait_manifestations.Add (new TraitManifestation (trait, pos, genome_string) );
     }
-    
+
+
+    /// <summary>
+    /// Add a Trait to this Genome at a certain position.
+    /// </summary>
     public void addTrait ( Trait trait, int position_in_genome )
     {
         // if trait is already in this genome, abort
@@ -81,47 +95,9 @@ public class Genome {
     }
 
 
-    private List<Trait> getTraits ()
-    {
-        List<Trait> all_traits = new List<Trait> ();
-        foreach ( TraitManifestation manifestation in trait_manifestations )
-        {
-            all_traits.Add (manifestation.Trait);
-        }
-
-        return all_traits;
-    }
-
-
-    public Dictionary<string, int> getTraitIntensities ( List<string> requested_trait_names_raw )
-    {
-        List<string> requested_trait_names = requested_trait_names_raw.Distinct ().ToList (); // remove duplicates
-
-        Dictionary<string, int> trait_names_and_intensities = new Dictionary<string, int> { };
-        foreach ( string requested_trait_name in requested_trait_names )
-        {
-            bool found = false;
-            foreach ( TraitManifestation manifestation in trait_manifestations )
-            {
-                if ( manifestation.Name == requested_trait_name )
-                {
-                    trait_names_and_intensities.Add (manifestation.Name, manifestation.Intensity);
-                    found = true;
-                    break; // the inner foreach
-                }
-            }
-
-            if ( !found ) Debug.LogWarning ("The Trait " + requested_trait_name + " could not be found in " + this.GetType ().ToString () + ".");
-        }
-
-        return trait_names_and_intensities;
-    }
-
     /// <summary>
-    /// Returns a Dictionary of Names and respective Trait Manifestations. With these, all trait Attributes are 
+    /// Returns a Dictionary of Names and respective TraitManifestations. With these, all trait Attributes are accessible (Intensity, Lenght and Name of the Trait)
     /// </summary>
-    /// <param name="requested_trait_names_raw"></param>
-    /// <returns></returns>
     public Dictionary<string, TraitManifestation> getTraitManifestations ( List<string> requested_trait_names_raw )
     {
         List<string> requested_trait_names = requested_trait_names_raw.Distinct ().ToList (); // remove duplicates
@@ -149,7 +125,7 @@ public class Genome {
 
     /*
     /// <summary>
-    /// 
+    /// Adds a Trait relative to another Trait that has aready been added. The latter is specified by string.
     /// </summary>
     public void addTrait ( Trait trait, string linked_trait, int link_relative_position = 0 )
     {
@@ -159,7 +135,7 @@ public class Genome {
     }
     
     /// <summary>
-    /// Add a bunch of correlated traits which can't be separated.
+    /// Add a bunch of correlated traits which can't be separated. These should depend on eachother like rate of growth and need for nutrition.
     /// </summary>
     /// <param name="traits_and_their_relative_positions">A Dictionary which contains all the traits to be added to the genom alongside their respective positions to eachother. The first integer describes the offset of the whole complex int the genome. Pass -1 for random placement.</param>
     public void addTraitStructure ( IDictionary<Trait, int> traits_and_their_relative_positions )
@@ -175,4 +151,41 @@ public class Genome {
     }
     */
 
+
+    // currently not necessary
+    //private List<Trait> getTraits ()
+    //{
+    //    List<Trait> all_traits = new List<Trait> ();
+    //    foreach ( TraitManifestation manifestation in trait_manifestations )
+    //    {
+    //        all_traits.Add (manifestation.Trait);
+    //    }
+
+    //    return all_traits;
+    //}
+
+    // currently not necessary
+    //public Dictionary<string, int> getTraitIntensities ( List<string> requested_trait_names_raw )
+    //{
+    //    List<string> requested_trait_names = requested_trait_names_raw.Distinct ().ToList (); // remove duplicates
+
+    //    Dictionary<string, int> trait_names_and_intensities = new Dictionary<string, int> { };
+    //    foreach ( string requested_trait_name in requested_trait_names )
+    //    {
+    //        bool found = false;
+    //        foreach ( TraitManifestation manifestation in trait_manifestations )
+    //        {
+    //            if ( manifestation.Name == requested_trait_name )
+    //            {
+    //                trait_names_and_intensities.Add (manifestation.Name, manifestation.Intensity);
+    //                found = true;
+    //                break; // the inner foreach
+    //            }
+    //        }
+
+    //        if ( !found ) Debug.LogWarning ("The Trait " + requested_trait_name + " could not be found in " + this.GetType ().ToString () + ".");
+    //    }
+
+    //    return trait_names_and_intensities;
+    //}
 }

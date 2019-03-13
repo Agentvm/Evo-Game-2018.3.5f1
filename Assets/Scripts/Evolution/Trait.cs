@@ -2,66 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Base Class for genetic Traits and Abilities in Characters (Animals, Plants, etc.)
+/*
+
+    Class for genetic Traits in Characters (Animals, Plants, etc.).
+    Traits determine the constitution of an organism by setting the basis of assessment for a certain feature or property of the life form.
+    This is, for example, it's size or the number of it's offspring.
+
+*/
 public class Trait
 {
-    // variables
+    // Variables
     private string name;
-    private int length;
-    public delegate int IntensityCheck (List<bool> genome_segment );
-    public IntensityCheck IntensityStatus;
-    //protected int? genome_position;
-    //protected int intensity; // describes if trait is active and to which extent it is
-    //private Genome genome;
+    private int length; // when applied to a Genome, this is the number of values that are needed to cumpute the intensity of this trait
+    public delegate int IntensityCheck (List<bool> genome_segment ); // delegate
+    public IntensityCheck IntensityStatus; // stores a reference to a function that can compute this trait's intensity, given a certain Genome.
 
     // Properties
-    public string Name
-    {
-        get { return name; }
-        //set { name = value; }
-    }
+    public string Name { get => name; /*set => name = value;*/ }
+    public int Length { get => length; /*set => length = value;*/ }
 
-    public int Length
-    {
-        get { return length; }
-        //set { length = value; }
-    }
-
-    //public int? GenomePosition
-    //{
-    //    get { return genome_position; }
-    //    set { genome_position = value; }
-    //}
-
-    //public int Intensity
-    //{
-    //    get { return intensity; }
-    //    set { intensity = value; }
-    //}
-
-    //public Genome Genome { get => genome; set => genome = value; }
 
     /// <summary>
-    /// Checks if the requirements for this trait are fulfilled in the given genome.
-    /// </summary>
-    /*virtual public int updateRequirementStatus ( List<bool> genome_string )
-    {
-        if ( genome_string.Count != this.Length ) Debug.LogError ("Trait " + name + " has received a genome of Size " + genome_string.Count + ", while it's Lenght is " + this.Length + ". You better check this.");
-
-        int number_true_results = 0;
-        foreach ( bool b in genome_string ) if ( b == true ) number_true_results++; // count the genes of the relevant genome part
-
-        return (int)( number_true_results > this.Length / 2 ); // update the status of the trait
-    }*/
-
-    /// <summary>
-    /// Constructor. Position in genome is determined when trait is added to a genome.
+    /// Constructor. Position in Genome as well as Intensity is determined when trait is added to a genome.
     /// </summary>
     public Trait ( string trait_name_given, int trait_length, IntensityCheck intensity_function )
     {
         name = trait_name_given;
         length = trait_length;
         IntensityStatus = intensity_function;
-        //Intensity = trait_intensity;
     }
 }

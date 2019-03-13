@@ -5,18 +5,34 @@ using UnityEngine;
 [RequireComponent (typeof (Character))]
 public class Grow : AbilityBaseClass
 {
+    // Inherits:
+    /*
+    // Variables
+    protected Character character; // reference to the Character script attached to the same GameObject
+    protected Dictionary<string, TraitManifestation> TraitManifestation = new Dictionary<string, TraitManifestation> { }; // for Trait access
+
+    // Properties
+    public string Name { get => (this.GetType ()).ToString (); }
+    */
+
+    // Variables
     private float size = 1f;
     float max_size;
-    float growth_per_tick; // game tick
+    float growth_per_tick; // means game tick
+
 
     // Start is called before the first frame update
     override protected void Start ()
     {
-        // gets character component and starts coroutine that calls evaluateIntensity as soon as character is fully initialized
+        // this gets character reference and starts coroutine that calls evaluateIntensity as soon as character is fully initialized (all traits set)
         base.Start ();
     }
 
-    // get Intensity values and compute 
+
+    /// <summary>
+    /// Is called as soon as character.TraitsInitialized is set to True.
+    /// Retrieves all Traits this Ability is based on, as well as their Intensities (which will not change), then calculates all constant values that follow of these.
+    /// </summary>
     override public void evaluateIntensity ()
     {
         TraitManifestation = character.Genome.getTraitManifestations (new List<string> () { "MaxSize", "GrowRate" });
@@ -42,7 +58,7 @@ public class Grow : AbilityBaseClass
     }
 
 
-    // helper function that does not belong here
+    // helper function that does not really belong here
     private string printGenome (Genome genome )
     {
         string str = "";
@@ -56,15 +72,19 @@ public class Grow : AbilityBaseClass
         return str;
     }
 
-    // make Changes to the game. One Tick is one unit of time, let's say one season.
+
+    /// <summary>
+    /// Make Changes to the game. One Tick is one unit of time, let's say one season.
+    /// </summary>
     override public void Tick ()
     {
         if (size < max_size )
         {
             // sprites are sized 1, 1, 1
             size = Mathf.Min (max_size, size + growth_per_tick );
-            this.transform.localScale = new Vector3 (size, size, size); // should min_size be 1 ?
+            this.transform.localScale = new Vector3 (size, size, size); // scale the GameObject // should min_size be 1 ?
         }
         
     }
+
 }

@@ -2,73 +2,49 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Base class for animals, plants, etc that are subject to evolution
+// Class for animals, plants, etc that are subject to evolution
 [RequireComponent (typeof (SpriteRenderer))]
 public class Character : MonoBehaviour {
 
     private Genome genome;
     private SpriteRenderer sprite;
-    private bool initialized = false;
+    private bool traits_initialized = false;
     //private float size;
 
     // Properties
     public Genome Genome { get => genome; }
-    public List<Trait> Traits { get => genome.Traits; }
-    public bool Initialized { get => initialized; } // Are a genom and all necessary traits attatched?
+    //public List<Trait> Traits { get => genome.Traits; } // currently not necessary
+    public bool TraitsInitialized { get => traits_initialized; } // Are a genom and all necessary traits attatched?
 
     //public float Size { get => size;}
     //public Color Color { get => color; }
 
     private void Start () // called after Constructor
     {
-        // 1. obj.Character --> what? nope.
-        // 2. like in SpaceGothicNavigation --> works
-        // 3. All in Start and with function
-        
-        sprite = GetComponent<SpriteRenderer> ();
+        sprite = GetComponent<SpriteRenderer> (); // get reference to sprite so you can change it's color
         setColorbyGenome ();
     }
 
-    /*public void addTrait ( Trait new_trait )
-    {
-        if ( new_trait != null )
-        {
-            Genome.addTrait (new_trait); // random trait positions in genome
-        }
-    }
-
-    public void addTraits ( List<Trait> new_traits )
-    {
-        if ( new_traits != null )
-        {
-            foreach ( Trait new_trait in new_traits )
-                Genome.addTrait (new_trait); // random trait positions in genome
-        }
-    }*/
-
 
     /// <summary>
-    /// Constructor
+    /// Constructor. Traits are only added here.
     /// </summary>
     /// <param name="mutated_parent_genome"></param>
     /// <param name="new_traits"></param>
     public void initialize ( Genome mutated_parent_genome, List<Trait> new_traits = null )
     {
         genome = mutated_parent_genome;
-        // add traits and update their intensities
+
+        // add Traits
         if (new_traits != null)
         {
             foreach (Trait new_trait in new_traits)
-                Genome.addTrait (new_trait); // random trait positions in genome
+                Genome.addTrait (new_trait); // random Trait positions in genome
         }
-        //genome.updateIntensities (); // check if Traits are currently active (is done implicitly)
+        traits_initialized = true; // set this byte, so Abilities can initialize with traits
 
 
         // add abilities (request list of abilities for this Constructor?)
-
-
-
-
         //foreach ( Trait trait in genome.Traits )
         //{
         //    // Add Behaviour Script to gameobject
@@ -78,10 +54,14 @@ public class Character : MonoBehaviour {
         //    // ((MySpellScript)GetComponent(mType)).Fire();
         //}
 
-        // Start will be called next
-        initialized = true;
+
     }
 
+    // maybe make this function scale to represent the whole string? (scaling is bad, because in binary code, the first digit will get extreme impact)
+    /// <summary>
+    /// Changes the color of the sprite in respect to the first 32 digits of the GenomeString.
+    /// Binary to Decimal conversion of respectively 8 digits (boolean values in genome_string) is used.
+    /// </summary>
     void setColorbyGenome ()
     {
         if (genome.GenomeString.Count < 24) // vermin
@@ -91,7 +71,7 @@ public class Character : MonoBehaviour {
         }
         else if (genome.GenomeString.Count < 32)
         {
-            float r = binaryToDecimal (genome.GenomeString.GetRange (0, 8) ) / 256;
+            float r = binaryToDecimal (genome.GenomeString.GetRange (0, 8) ) / 256; // convert the first 8 digits to a decimal number, which is then normalized to match the 0 - 1f range
             float g = binaryToDecimal (genome.GenomeString.GetRange (8, 8) ) / 256;
             float b = binaryToDecimal (genome.GenomeString.GetRange (16, 8) ) / 256;
             float a = 0.8f;
@@ -111,20 +91,10 @@ public class Character : MonoBehaviour {
         //sprite.color = color;
     }
 
-    //int binaryToDecimal ( List<bool> list )
-    //{
-    //    int iteration = 0;
-    //    float result = 0;
 
-    //    foreach ( bool boolean in list )
-    //    {
-    //        result += (System.Convert.ToInt32 (boolean) * Mathf.Pow (2, iteration)); // convert bits to decimal
-    //        iteration++;
-    //    }
-
-    //    return (int)result;
-    //}
-
+    /// <summary>
+    /// Does what is says, but uses a List<Bool> as input.
+    /// </summary>
     float binaryToDecimal ( List<bool> list )
     {
         int iteration = 0;

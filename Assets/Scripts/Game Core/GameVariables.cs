@@ -5,18 +5,22 @@ using UnityEngine;
 
 public class GameVariables : MonoBehaviour
 {
-    private double game_ticks = 0;
-    public GameObject map;
+    // Variables
+    private double current_game_ticks = 0; // counts the game ticks since start. Each tick currently means that a long time period elapses (maybe a season, or half a year)
+    public GameObject map; // The plane where the game takes place
     private List<Trait> available_traits = new List<Trait> ();
-    private Dictionary<GameObject, List<AbilityBaseClass>> individuals_lexicon = new Dictionary<GameObject, List<AbilityBaseClass>> ();
-    //private Dictionary<AbilityBaseClass, List<Trait>> abilities_and_traits = new Dictionary<AbilityBaseClass, List<Trait>>;
-    public List<Trait> AvailableTraits { get => available_traits; }
-    //public IDictionary<AbilityBaseClass, List<Trait>> AbilitiesAndTraits { get => abilities_and_traits;}
+    private Dictionary<GameObject, List<AbilityBaseClass>> individuals_lexicon = new Dictionary<GameObject, List<AbilityBaseClass>> (); // used to iterate over all abilities (maybe make this a list?)
 
+    // Properties
+    public List<Trait> AvailableTraits { get => available_traits; }
+
+
+    /// <summary>
+    /// This function is called when game starts. It takes care of the initialization of the basic data structures (Traits that Characters have or develop).
+    /// </summary>
     public void initialize ()
     {
         // add traits
-        //available_traits.Add (new Trait ("GrowRate", 8, new Trait.IntensityCheck(IntensityFunctionCollection.GrowRate )));
         available_traits.Add (new Trait ("MaxSize", 8, IntensityFunctionCollection.MaxSize)); // static class
         available_traits.Add (new Trait ("GrowRate", 10, IntensityFunctionCollection.GrowRate));
         available_traits.Add (new Trait ("LeavesDensity", 7, IntensityFunctionCollection.LeavesDensity)); //
@@ -29,7 +33,9 @@ public class GameVariables : MonoBehaviour
 
     }
 
-    // find all gameobjects that are individuals capable of evolution, and their abilities
+    /// <summary>
+    /// Find all gameobjects that are individuals capable of evolution, and their abilities. (Maybe make Characters register themselves instead?)
+    /// </summary>
     private void updateIndividuumLexicon ()
     {
         // Find all Gameobjects of Interest
@@ -38,6 +44,7 @@ public class GameVariables : MonoBehaviour
 
         foreach (GameObject individuum in all_individuals )
         {
+            // if not already in lexicon, add. (Characters only get new abilities when they are instantiated / born)
             if ( !individuals_lexicon.ContainsKey (individuum) )
             {
                 individuals_lexicon.Add (individuum, new List<AbilityBaseClass> (individuum.GetComponents<AbilityBaseClass> () ));
@@ -45,6 +52,9 @@ public class GameVariables : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Calls the function Tick () on all ability scripts. Every derivative class of AbilityBaseClass implements Tick () to make changes to the game.
+    /// </summary>
     public void gameTick ( int times = 1 )
     {
         updateIndividuumLexicon ();
@@ -57,8 +67,14 @@ public class GameVariables : MonoBehaviour
                 foreach ( AbilityBaseClass ability in abilities )
                     ability.Tick ();
         }
+
+        current_game_ticks++;
     }
 
+    /// <summary>
+    /// Instantiates two prefabs with the script Character and some Ability scripts attached. The genomes of those two closely resemble
+    /// eachother, so that they can reproduce. They are placed near to eachother.
+    /// </summary>
     public void spawnTwoCells ()
     {
         Vector3 spawn_point = RandomPointOnPlane (map );
@@ -80,18 +96,12 @@ public class GameVariables : MonoBehaviour
         character_script_reference.initialize (genome2, getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */}));
         individuals_lexicon.Add (character, new List<AbilityBaseClass> (character.GetComponents<AbilityBaseClass> ()));
 
-        //List<Character> adams_and_eves = new List<Character> ();
-        //foreach ( GameObject obj in GameObject.FindGameObjectsWithTag ("Origin") ) // ToDo: don't use Origin Tag, use Instantiate
-        //{
-        //    if ( obj.GetComponent<Character> () == null )
-        //        obj.AddComponent<Character> ();
-        //    Character character_script = obj.GetComponent<Character> ();
-        //    character_script.initialize (new Genome (), getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */} ));
-        //    adams_and_eves.Add (character_script);
-        //}
     }
 
-    public Vector3 RandomPointOnPlane (GameObject plane_with_mesh_collider )
+    /// <summary>
+    /// Gives a point on a plane that extends in x/y - direction (red/green axis in unity)
+    /// </summary>
+    private Vector3 RandomPointOnPlane (GameObject plane_with_mesh_collider )
     {
         // get mesh bounds
         Mesh planeMesh = plane_with_mesh_collider.GetComponent<MeshFilter>().mesh;
@@ -111,41 +121,10 @@ public class GameVariables : MonoBehaviour
         return newVec;
     }
 
-    /*{
-        genome = mutated_parent_genome;
-        if (new_traits != null)
-        {
-            foreach (Trait new_trait in new_traits)
-                Genome.addTrait(new_trait); // random trait positions in genome
-        }
-
-        genome.updateIntensities(); // check if Traits are currently active
-        
-        foreach (Trait trait in genome.Traits )
-        {
-
-
-
-            // Add Behaviour Script to gameobject
-            //System.Type ability_type = System.Type.GetType(trait.Name );
-            //gameObject.AddComponent (ability_type);
-            // good to know
-            // ((MySpellScript)GetComponent(mType)).Fire();
-        }
-
-    }*/
-
-    //void print_list (List<bool> list)
-    //{
-    //    print ("List of Length " + list.Count);
-    //    foreach ( bool b in list )
-    //    {
-    //        if ( b ) print ("True");
-    //        else print ("False");
-    //    }
-    //}
-
-    public List<Trait> getTraits ( List<string> requested_traits )
+    /// <summary>
+    /// Parses strings to traits. Use like so: list = getTraits (new List<string> () {"Trait1", "Trait2"})
+    /// </summary>
+    private List<Trait> getTraits ( List<string> requested_traits )
     {
         List<Trait> returned_traits = new List<Trait> ();
 
@@ -162,7 +141,7 @@ public class GameVariables : MonoBehaviour
                 }
             }
 
-            if ( !found ) Debug.LogWarning ("The Trait " + requested_name + " could not be found.");
+            if ( !found ) Debug.LogWarning ("The Trait " + requested_name + " could not be found."); // this does never fire. Debug please
 
         }
         return returned_traits;
