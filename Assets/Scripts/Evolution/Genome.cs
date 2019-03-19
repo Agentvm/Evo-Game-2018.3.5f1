@@ -108,7 +108,7 @@ public class Genome {
         return null;
     }
 
-
+    /*
     /// <summary>
     /// Returns a Dictionary of Names and respective TraitManifestations. With these, all trait Attributes are accessible (Intensity, Lenght and Name of the Trait)
     /// </summary>
@@ -135,7 +135,7 @@ public class Genome {
         return trait_names_and_manifestations;
     }
 
-
+    */
     /*
     /// <summary>
     /// Adds a Trait relative to another Trait that has aready been added. The latter is specified by string.

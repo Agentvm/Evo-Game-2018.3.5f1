@@ -4,14 +4,11 @@ using UnityEngine;
 
 public enum TraitTypes { MaxSize, GrowRate, LeavesDensity, LightRequirement, OffspringCount };
 
-// It takes care of the initialization of the basic data structures (Traits that Characters have or develop).
+// Takes care of the initialization of the basic data structures (Traits that Characters have or develop).
 public static class TraitData
 {
-    //private List<Trait> available_traits = new List<Trait> ();
-    private static Trait[] available_traits = new Trait[5];//new List<Trait> ();
+    private static Trait[] available_traits = new Trait[5];
 
-    // Properties
-    //public List<Trait> AvailableTraits { get => available_traits; }
 
     static TraitData ()
     {
@@ -27,6 +24,7 @@ public static class TraitData
         // Basic value for determination of kids or saplings count
         available_traits[(int)TraitTypes.OffspringCount] = new Trait (nameof (TraitTypes.OffspringCount), 10, IntensityFunctionCollection.CountTrueValues);
 
+
         // check that every entry of enum has been set
         for ( int i = 0; i < TraitTypes.GetNames (typeof (TraitTypes)).Length; i++ )
         {
@@ -34,7 +32,7 @@ public static class TraitData
         }
 
         // check that enum and array match each other
-        for ( int i = 0; i < available_traits.Length; i++ )
+        for ( int i = 0; i < TraitTypes.GetNames (typeof (TraitTypes)).Length; i++ )
         {
             if ( available_traits[i].Name != ((TraitTypes)i).ToString () )
             {
@@ -42,19 +40,6 @@ public static class TraitData
             }
         }
 
-        /* deprecated list
-        // add Traits, take functions of static class IntensityFunctionCollection to assign Trait IntensityFunction delegates
-        // Determines Maximum Size of a Character (e.g. Creature or Plant)
-        available_traits.Add (new Trait (nameof (TraitType.MaxSize ), 8, IntensityFunctionCollection.CountTrueValues ));
-        // Determines rate of growth
-        available_traits.Add (new Trait (nameof (TraitType.GrowRate ), 10, IntensityFunctionCollection.CountTrueValues));
-        // Determines how much leaves are produced (+ how much light can be consumed and blocked).
-        available_traits.Add (new Trait (nameof (TraitType.LeavesDensity ), 7, IntensityFunctionCollection.CountTrueValues));
-        // Determines how much light is needed to stay alive and grow (overlaps heavily with growing-related Traits, genome-wise.)
-        available_traits.Add (new Trait (nameof (TraitType.LightRequirement ), 16, IntensityFunctionCollection.CountTrueValues));
-        // Basic value for determination of kids or saplings count
-        available_traits.Add (new Trait (nameof (TraitType.OffspringCount ), 10, IntensityFunctionCollection.CountTrueValues));
-        */
     }
 
     public static Trait getTrait (TraitTypes trait_type )
@@ -63,7 +48,3 @@ public static class TraitData
     }
 
 }
-
-//available_abilities.Add (new Ability ("Grow", new List<string> () { "MaxSize", "GrowRate" }));
-//available_abilities.Add (new Ability ("GrowLeaves", new List<string> () { "MaxSize", "GrowRate", "LeavesDensity" }));
-//available_abilities.Add (new Ability ("CollectLight"
