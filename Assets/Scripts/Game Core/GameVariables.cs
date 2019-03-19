@@ -7,30 +7,19 @@ public class GameVariables : MonoBehaviour
 {
     // Variables
     private double current_game_ticks = 0; // counts the game ticks since start. Each tick currently means that a long time period elapses (maybe a season, or half a year)
-    public GameObject map; // The plane where the game takes place
-    private List<Trait> available_traits = new List<Trait> ();
-    private Dictionary<GameObject, List<AbilityBaseClass>> individuals_lexicon = new Dictionary<GameObject, List<AbilityBaseClass>> (); // used to iterate over all abilities (maybe make this a list?)
+    [SerializeField]private GameObject map; // The plane where the game takes place
+    // used to iterate over all abilities (maybe make this a list?)
+    private Dictionary<GameObject, List<AbilityBaseClass>> individuals_lexicon = new Dictionary<GameObject, List<AbilityBaseClass>> ();
 
-    // Properties
-    public List<Trait> AvailableTraits { get => available_traits; }
+    
 
 
     /// <summary>
-    /// This function is called when game starts. It takes care of the initialization of the basic data structures (Traits that Characters have or develop).
+    /// This function is called when game starts.
     /// </summary>
     public void initialize ()
     {
-        // add traits
-        available_traits.Add (new Trait ("MaxSize", 8, IntensityFunctionCollection.MaxSize)); // static class
-        available_traits.Add (new Trait ("GrowRate", 10, IntensityFunctionCollection.GrowRate));
-        available_traits.Add (new Trait ("LeavesDensity", 7, IntensityFunctionCollection.LeavesDensity)); //
-        available_traits.Add (new Trait ("LightRequirement", 16, IntensityFunctionCollection.LightRequirement));
-        available_traits.Add (new Trait ("OffspringCount", 10, IntensityFunctionCollection.OffspringCount));
-
-        //available_abilities.Add (new Ability ("Grow", new List<string> () { "MaxSize", "GrowRate" }));
-        //available_abilities.Add (new Ability ("GrowLeaves", new List<string> () { "MaxSize", "GrowRate", "LeavesDensity" }));
-        //available_abilities.Add (new Ability ("CollectLight"
-
+        
     }
 
     /// <summary>
@@ -79,7 +68,7 @@ public class GameVariables : MonoBehaviour
     {
         Vector3 spawn_point = RandomPointOnPlane (map );
 
-        // make tehm similar
+        // make them similar
         Genome genome1 = new Genome ();
         Genome genome2 = genome1;
         genome1.mutate ();
@@ -88,12 +77,16 @@ public class GameVariables : MonoBehaviour
         // initialise a basic individual Character
         GameObject character = (GameObject)Instantiate(Resources.Load("Cell" ), spawn_point, new Quaternion (0f, 0f, 0f, 1f ));
         Character character_script_reference = character.GetComponent<Character> ();
-        character_script_reference.initialize (genome1, getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */}));
+        character_script_reference.initialize (genome1,
+            new List<TraitTypes> () { TraitTypes.GrowRate,TraitTypes.MaxSize, TraitTypes.OffspringCount },
+            new List<AbilityTypes> () { AbilityTypes.Grow });
         individuals_lexicon.Add (character, new List<AbilityBaseClass> (character.GetComponents<AbilityBaseClass> ()));
 
         character = (GameObject)Instantiate(Resources.Load("Cell" ), spawn_point + new Vector3 (Random.value * 5f, Random.value * 5f, 0f), new Quaternion (0f, 0f, 0f, 1f ));
         character_script_reference = character.GetComponent<Character> ();
-        character_script_reference.initialize (genome2, getTraits (new List<string> () { "GrowRate", "MaxSize", "OffspringCount"/*, "MaxAge" */}));
+        character_script_reference.initialize (genome2,
+            new List<TraitTypes> () { TraitTypes.GrowRate, TraitTypes.MaxSize, TraitTypes.OffspringCount },
+            new List<AbilityTypes> () { AbilityTypes.Grow });
         individuals_lexicon.Add (character, new List<AbilityBaseClass> (character.GetComponents<AbilityBaseClass> ()));
 
     }
@@ -121,6 +114,7 @@ public class GameVariables : MonoBehaviour
         return newVec;
     }
 
+    /*
     /// <summary>
     /// Parses strings to traits. Use like so: list = getTraits (new List<string> () {"Trait1", "Trait2"})
     /// </summary>
@@ -145,6 +139,6 @@ public class GameVariables : MonoBehaviour
 
         }
         return returned_traits;
-    }
+    }*/
 
 }

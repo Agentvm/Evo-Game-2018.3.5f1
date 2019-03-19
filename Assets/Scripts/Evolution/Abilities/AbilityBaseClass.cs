@@ -15,13 +15,13 @@ public class AbilityBaseClass : MonoBehaviour
 {
     // Variables
     protected Character character; // reference to the Character script attached to the same GameObject
-    protected Dictionary<string, TraitManifestation> TraitManifestation = new Dictionary<string, TraitManifestation> { }; // for Trait access
+    //protected Dictionary<string, TraitManifestation> TraitManifestations = new Dictionary<string, TraitManifestation> { }; // for Trait access
 
     // Properties
     public string Name { get => (this.GetType ()).ToString (); }
 
 
-    protected virtual void Start ()
+    protected /*virtual*/ void Start ()
     {
         character = GetComponent<Character> (); // get reference
         StartCoroutine (waitForInitialization ()); // Start a waiting coroutine
@@ -45,7 +45,7 @@ public class AbilityBaseClass : MonoBehaviour
     /// </summary>
     public virtual void evaluateIntensity ()
     {
-        TraitManifestation = character.Genome.getTraitManifestations (new List<string> () { });
+        //TraitManifestations = character.Genome.getTraitManifestations (new List<string> () { });
 
         // calculate the values that remain fixed
         // ...

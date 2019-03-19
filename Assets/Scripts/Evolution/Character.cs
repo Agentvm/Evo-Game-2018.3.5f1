@@ -9,6 +9,7 @@ public class Character : MonoBehaviour {
     private Genome genome;
     private SpriteRenderer sprite;
     private bool traits_initialized = false;
+    private List<AbilityBaseClass> abilities = new List<AbilityBaseClass> ();
     //private float size;
 
     // Properties
@@ -31,20 +32,24 @@ public class Character : MonoBehaviour {
     /// </summary>
     /// <param name="mutated_parent_genome"></param>
     /// <param name="new_traits"></param>
-    public void initialize ( Genome mutated_parent_genome, List<Trait> new_traits = null )
+    public void initialize ( Genome mutated_parent_genome, List<TraitTypes> new_traits, List<AbilityTypes> new_abilities )
     {
         genome = mutated_parent_genome;
 
-        // add Traits
+        // add Traits to genome
         if (new_traits != null)
         {
-            foreach (Trait new_trait in new_traits)
-                Genome.addTrait (new_trait); // random Trait positions in genome
+            foreach (TraitTypes type in new_traits)
+                genome.manifestTrait (TraitData.getTrait (type )); // random Trait positions in genome
         }
         traits_initialized = true; // set this byte, so Abilities can initialize with traits
 
 
         // add abilities (request list of abilities for this Constructor?)
+        foreach (AbilityTypes type in new_abilities )
+        {
+            gameObject.AddComponent (AbilityData.getAbilityType (type ));
+        }
         //foreach ( Trait trait in genome.Traits )
         //{
         //    // Add Behaviour Script to gameobject

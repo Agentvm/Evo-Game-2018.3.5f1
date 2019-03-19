@@ -72,7 +72,7 @@ public class Genome {
     /// <summary>
     /// Add a Trait to this Genome.
     /// </summary>
-    public void addTrait ( Trait trait )
+    public void manifestTrait ( Trait trait )
     {
         // if trait is already in this genome, abort
         foreach (TraitManifestation manifestation in trait_manifestations) if (manifestation.Name == trait.Name) return;
@@ -94,21 +94,34 @@ public class Genome {
         trait_manifestations.Add (new TraitManifestation (trait, position_in_genome, genome_string ));
     }
 
+    public TraitManifestation GetManifestation (TraitTypes requested_trait_type)
+    {
+        bool found = false;
+        foreach ( TraitManifestation manifestation in this.trait_manifestations )
+        {
+            // TraitManifestations obviously have the same name as the Trait they correspond to
+            if ( requested_trait_type.ToString () == manifestation.Name )
+                return manifestation;
+        }
+
+        if ( !found ) Debug.LogWarning ("The Trait " + requested_trait_type.ToString () + " is not manifested in " + this.GetType ().ToString () + ".");
+        return null;
+    }
+
 
     /// <summary>
     /// Returns a Dictionary of Names and respective TraitManifestations. With these, all trait Attributes are accessible (Intensity, Lenght and Name of the Trait)
     /// </summary>
-    public Dictionary<string, TraitManifestation> getTraitManifestations ( List<string> requested_trait_names_raw )
+    public Dictionary<string, TraitManifestation> getTraitManifestations ( List<Trait> requested_traits )
     {
-        List<string> requested_trait_names = requested_trait_names_raw.Distinct ().ToList (); // remove duplicates
-
         Dictionary<string, TraitManifestation> trait_names_and_manifestations = new Dictionary<string, TraitManifestation> { };
-        foreach ( string requested_trait_name in requested_trait_names )
+
+        foreach ( Trait requested_trait in requested_traits )
         {
             bool found = false;
             foreach ( TraitManifestation manifestation in trait_manifestations )
             {
-                if ( manifestation.Name == requested_trait_name )
+                if ( manifestation.Name == requested_trait.Name )
                 {
                     trait_names_and_manifestations.Add (manifestation.Name, manifestation);
                     found = true;
@@ -116,7 +129,7 @@ public class Genome {
                 }
             }
 
-            if ( !found ) Debug.LogWarning ("The Trait " + requested_trait_name + " could not be found in " + this.GetType ().ToString () + ".");
+            if ( !found ) Debug.LogWarning ("The Trait " + requested_trait.Name + " could not be found in " + this.GetType ().ToString () + ".");
         }
 
         return trait_names_and_manifestations;

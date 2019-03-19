@@ -20,13 +20,13 @@ public class Grow : AbilityBaseClass
     float max_size;
     float growth_per_tick; // means game tick
 
-
+    /*
     // Start is called before the first frame update
     override protected void Start ()
     {
         // this gets character reference and starts coroutine that calls evaluateIntensity as soon as character is fully initialized (all traits set)
         base.Start ();
-    }
+    }*/
 
 
     /// <summary>
@@ -35,22 +35,28 @@ public class Grow : AbilityBaseClass
     /// </summary>
     override public void evaluateIntensity ()
     {
-        TraitManifestation = character.Genome.getTraitManifestations (new List<string> () { "MaxSize", "GrowRate" });
+        //TraitManifestations = character.Genome.getTraitManifestations (new List<string> () { "MaxSize", "GrowRate" });
+
+        // get Intensities and lenghts
+        float max_size_intensity = this.character.Genome.GetManifestation (TraitTypes.MaxSize ).Intensity;
+        float max_size_length = this.character.Genome.GetManifestation (TraitTypes.MaxSize ).Length;
+        float grow_rate_intensity = this.character.Genome.GetManifestation (TraitTypes.GrowRate ).Intensity;
+        float grow_rate_length = this.character.Genome.GetManifestation (TraitTypes.GrowRate ).Length;
 
         // calculate the values that remain fixed
         // MaxSize
-        float relative_max_size = (float)TraitManifestation["MaxSize"].Intensity / (float)TraitManifestation["MaxSize"].Length;
+        float relative_max_size = max_size_intensity / max_size_length;
         max_size = Mathf.Pow (2, (float)relative_max_size + 1f); // rises exponentially: 10 to the power of 1f - 2f
 
         // GrowRate
-        float relative_rate_of_growth = (float)TraitManifestation["GrowRate"].Intensity / (float)TraitManifestation["GrowRate"].Length;
+        float relative_rate_of_growth = grow_rate_intensity / grow_rate_length;
         // min rate = 400^1 / 400^2 = 0,0025 --> 100 years to full growth | max rate = 400^2 / 400^2 = 1 --> 1 Season to full growth | mean rate = 400^1.5 / 400^2 = 0.05 --> 5 Years to full growth
         float normalized_rate_of_growth  =  Mathf.Pow (400f, 1f + (float)relative_rate_of_growth) / (float)(400f*400f);
         growth_per_tick = normalized_rate_of_growth * max_size;
 
-        Debug.Log ("Genome = " + printGenome (character.Genome));
-        Debug.Log ("TraitManifestation[MaxSize].Intensity = " + TraitManifestation["MaxSize"].Intensity);
-        Debug.Log ("TraitManifestation[GrowRate].Intensity = " + TraitManifestation["GrowRate"].Intensity);
+        Debug.Log ("Genome = " + printGenome (character.Genome ));
+        Debug.Log ("max_size_intensity = " + max_size_intensity );
+        Debug.Log ("grow_rate_intensity = " + grow_rate_intensity );
 
         // make babies bigger
         size = 0.1f * max_size;

@@ -30,8 +30,8 @@ public class TraitManifestation
     private int intensity; // because Intensity is not to change during the lifetime of a TraitManifestation, it is an attribute here
 
     // Properties
-    public int Intensity { get => intensity; } // expose trait Attributes so these can be easily read by Ability Scripts
-    public int Length { get => trait.Length; }
+    public float Intensity { get => (float)intensity; } // expose trait Attributes so these can be easily read by Ability Scripts
+    public float Length { get => (float)trait.Length; }
     public string Name { get => trait.Name; }
         
 
@@ -42,7 +42,7 @@ public class TraitManifestation
     {
         segments = new List<ManifestationSegment> ();
         trait = given_trait;
-        segments.Add (new ManifestationSegment (position, Length)); // no splitting of segments implemented, though it is possible
+        segments.Add (new ManifestationSegment (position, trait.Length)); // no splitting of segments implemented, though it is possible
         intensity = given_intensity;
     }
 
@@ -54,7 +54,7 @@ public class TraitManifestation
     {
         segments = new List<ManifestationSegment> ();
         trait = given_trait;
-        segments.Add (new ManifestationSegment (position, Length)); // no splitting of segments implemented, though it is possible
+        segments.Add (new ManifestationSegment (position, trait.Length)); // no splitting of segments implemented, though it is possible
         updateIntensityStatus (genome_string );
     }
 
