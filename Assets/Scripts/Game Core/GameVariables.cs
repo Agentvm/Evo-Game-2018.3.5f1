@@ -11,7 +11,6 @@ public class GameVariables : MonoBehaviour
     // used to iterate over all abilities (maybe make this a list?)
     private Dictionary<GameObject, List<AbilityBaseClass>> individuals_lexicon = new Dictionary<GameObject, List<AbilityBaseClass>> ();
 
-    
 
 
     /// <summary>

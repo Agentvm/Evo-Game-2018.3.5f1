@@ -16,6 +16,7 @@ public class AbilityBaseClass : MonoBehaviour
     // Variables
     protected Character character; // reference to the Character script attached to the same GameObject
     //protected Dictionary<string, TraitManifestation> TraitManifestations = new Dictionary<string, TraitManifestation> { }; // for Trait access
+     
 
     // Properties
     public string Name { get => (this.GetType ()).ToString (); }

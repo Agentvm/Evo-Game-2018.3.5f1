@@ -2,29 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// --- Container Class -------------------------------------------------
+public class ManifestationSegment
+{
+    public int position;
+    public int length;
+
+    /// <summary>
+    /// Constructor takes position and length of the segment
+    /// </summary>
+    public ManifestationSegment ( int given_position, int given_length )
+    {
+        position = given_position;
+        length = given_length;
+    }
+}
+
 
 /*
 Contains the position/distribution of the Trait in it's respective Genome. Computes Trait Intensity in this certain Genome. 
  */
 public class TraitManifestation
 {
-// --- Private Container Class -------------------------------------------------
-    private class ManifestationSegment
-    {
-        public int position;
-        public int length;
-
-        /// <summary>
-        /// Constructor takes position and length of the segment
-        /// </summary>
-        public ManifestationSegment ( int given_position, int given_length ) 
-        {
-            position = given_position;
-            length = given_length;
-        }
-    }
-
-// --- Begin of actual Class ---------------------------------------------------
     private Trait trait;
     private List<ManifestationSegment> segments; // the Trait can manifest itself in multiple segments. Their length combined matches Trait.Length
     private int intensity; // because Intensity is not to change during the lifetime of a TraitManifestation, it is an attribute here
@@ -33,8 +32,9 @@ public class TraitManifestation
     public float Intensity { get => (float)intensity; } // expose trait Attributes so these can be easily read by Ability Scripts
     public float Length { get => (float)trait.Length; }
     public string Name { get => trait.Name; }
-        
+    public List<ManifestationSegment> Segments { get => segments;}
 
+    
     /// <summary>
     /// Construct a single segment manifestation, assigning an Intensity.
     /// </summary>
@@ -42,10 +42,10 @@ public class TraitManifestation
     {
         segments = new List<ManifestationSegment> ();
         trait = given_trait;
-        segments.Add (new ManifestationSegment (position, trait.Length)); // no splitting of segments implemented, though it is possible
+        segments.Add (new ManifestationSegment (position, trait.Length)); // splitting of segments possible
         intensity = given_intensity;
     }
-
+    
 
     /// <summary>
     /// Construct a single segment manifestation by giving a genome_string. It is used to compute Intensity.
@@ -54,8 +54,30 @@ public class TraitManifestation
     {
         segments = new List<ManifestationSegment> ();
         trait = given_trait;
-        segments.Add (new ManifestationSegment (position, trait.Length)); // no splitting of segments implemented, though it is possible
+        segments.Add (new ManifestationSegment (position, trait.Length)); // splitting of segments possible
         updateIntensityStatus (genome_string );
+    }
+
+    /// <summary>
+    /// Construct a single segment manifestation by giving a genome_string. It is used to compute Intensity.
+    /// </summary>
+    public TraitManifestation ( Trait given_trait, Dictionary<int, int> positions_and_lengths, List<bool> genome_string )
+    {
+        // length check
+        int overall_length = 0;
+        foreach ( int length in positions_and_lengths.Values ) overall_length += length;
+        if ( overall_length != given_trait.Length ) return;
+
+        segments = new List<ManifestationSegment> ();
+        trait = given_trait;
+
+        // generate Segments
+        foreach (int position_key in positions_and_lengths.Keys)
+        {
+            segments.Add (new ManifestationSegment (position_key, positions_and_lengths[position_key])); // splitting of segments
+        }
+        
+        updateIntensityStatus (genome_string);
     }
 
 

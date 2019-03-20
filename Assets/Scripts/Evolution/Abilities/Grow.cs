@@ -46,7 +46,7 @@ public class Grow : AbilityBaseClass
         // calculate the values that remain fixed
         // MaxSize
         float relative_max_size = max_size_intensity / max_size_length;
-        max_size = Mathf.Pow (2, (float)relative_max_size + 1f); // rises exponentially: 10 to the power of 1f - 2f
+        max_size = Mathf.Pow (2, (float)relative_max_size + 1f); // rises exponentially: 2 to the power of 1f - 2f
 
         // GrowRate
         float relative_rate_of_growth = grow_rate_intensity / grow_rate_length;

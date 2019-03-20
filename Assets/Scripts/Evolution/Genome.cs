@@ -86,13 +86,72 @@ public class Genome {
     /// <summary>
     /// Add a Trait to this Genome at a certain position.
     /// </summary>
-    public void addTrait ( Trait trait, int position_in_genome )
+    public void manifestTrait ( Trait trait, int position_in_genome )
     {
         // if trait is already in this genome, abort
         foreach ( TraitManifestation manifestation in trait_manifestations ) if ( manifestation.Name == trait.Name ) return;
 
         trait_manifestations.Add (new TraitManifestation (trait, position_in_genome, genome_string ));
     }
+
+    public void manifestInterwovenTrait ( Trait new_trait, TraitTypes type_of_trait_in_genome, int number_of_overlapping_digits )
+    {
+        // checks
+        if ( GetManifestation (new_trait.Type) != null ) return; // check if the trait to be added is already manifested
+        TraitManifestation trait_in_genome = GetManifestation (type_of_trait_in_genome ); // get the manifested trait that the new one should overlap with
+        if ( trait_in_genome == null ) return;
+
+        // compute the offset with length of TraitManifestation in genome and overlapping length
+        int offset = (trait_in_genome.Segments[0].length - number_of_overlapping_digits);
+        if ( Random.value > 0.5f ) offset *= -1; // flip the value to overlap the first or last digits
+
+        // add the new Trait at a position relative to the specified trait already in genome
+        int position = trait_in_genome.Segments[0].position + offset;
+        trait_manifestations.Add (new TraitManifestation (new_trait, position, genome_string ));
+    }
+
+    /* Draft for interwoven Trait addition on segmented traits
+    public void manifestInterwovenTrait (Trait new_trait, TraitTypes type_of_trait_in_genome, int number_of_overlapping_digits )
+    {
+        if ( GetManifestation (new_trait.Type) != null ) return; // check if the trait to be added is already manifested
+        TraitManifestation trait_in_genome = GetManifestation (type_of_trait_in_genome ); // get the manifested trait that the new one should overlap with
+        if ( trait_in_genome == null ) return;
+
+        Dictionary<int, int> segments_dict = new Dictionary<int, int> ();
+        foreach (ManifestationSegment segment in trait_in_genome.Segments)
+        {
+            segments_dict.Add (segment.position, segment.length);
+        }
+    }
+
+    private Dictionary<int, int> designateOverlappingSegments ( Dictionary<int, int> dict, int length, bool from_front )
+    {
+        Dictionary<int, int> returned_segments = new Dictionary<int, int> ();
+
+        if ( !from_front ) dict.Reverse ();
+
+        foreach (int key in dict.Keys)
+        {
+            if (length > dict[key]) // length is the number of digits that overlap and is here compared to the length of the next segment
+            {
+                returned_segments.Add (key, dict[key] );
+                length -= dict[key]; // length is diminished by segment length
+            }
+            else if (length == dict[key])
+            {
+                returned_segments.Add (key, dict[key]);
+                length -= dict[key]; // length is diminished by segment length
+                return returned_segments;
+            }
+            else if (length < dict[key])
+            {
+
+            }
+        }
+
+        Debug.LogError ("This should be investigated.");
+        return null;
+    }*/
 
     public TraitManifestation GetManifestation (TraitTypes requested_trait_type)
     {
