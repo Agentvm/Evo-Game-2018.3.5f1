@@ -6,12 +6,43 @@
  * 
  * 
 
+ --- Designfragen ----------------------
+ 
+ - (Schwerwiegend!) Komplexitätswelle: Jede Kleinigkeit wie etwa der Nährstoffbedarf einer Pflanze will festgelegt werden, hängt aber auch
+    von vielen anderen Faktoren ab, die im Zweifelsfall alle ich festlegen muss.
+    -> zunächst mal öffentlich in GameVariables festlegen, beim Spielen ausprobieren und anpassen.
+    -> oder vielleicht doch nicht, denn das Alles wird sich ständig verändern
+    -> Aber gerade dann könnte es sinnvoll sein, erst eine stabile Version herzustellen, bevor man am Ende vor einem wirren Knäuel an kaputten
+        Beziehungen steht.
+
+ - Wie passen Metaaktionen wie Sterben/Fortpflanzen in das Konzept einer Ability? Muss evt ein anderes Konzept genutzt werden?
+
+ - scaling thoughts (2 ^ Intensity scheint eine gute Grundlage für einen kostanten Wert in einer Ability zu sein )
+ - (check) Color Problem (Color Genom should mirror certain genes of the main Genom)
+ - Juvenile Problem (start at 1/10 maxSize, then progress with each game tick)
+
+ - (Schwerwiegend) Wann werden neue Traits/Abilities in Nachkommen sichtbar? (zufällig, Techtree)
+ 
+ - (Schwerwiegend) Zeitproblem: Evolutive Entwicklungen zeigen sich erst im Verlauf mehrerer hundert Jahre, aber man will auch den Tagesablauf eines Wesens
+    im Stil eines Terrariums sehen können.
+    - Schlaf: Ein Trait? Wann ist Nacht?
+    - Wie oft werden Abilities gecallt? Alle auf einmal, oder eine pro Tick?
+
+ - Sinnvoller Spielstart (Spieler wählt Startpunkt und Anfangsausrichtung der Spezies)
+ - (Schwerwiegend) Motivierendenes Gameplay (Techtree, Mutationspunkte um Gene gezielt mutieren zu lassen, Individuen von der Fortpflanzung ausschließen)
+ - Motivierendes Spielziel (eine intelligente Rasse hervorbringen, die eigene Spezies überleben lassen, ...)
+ - Das Spiel angemesses schwierig gestalten (Tipps einblenden, dem Spieler mehr Macht geben)
+    - es ist duchaus vorstellbar, dass menschliche Spieler es nicht fertigbringen, eine funktionierende Spezies aufleben zu lassen. Schließlich
+      ist das Prinzip der Evolution selbst ein Optimierungsalgorithmus, der erst einmal übertroffen werden will.
+
+
  --- ToDo --------------------------------------------------------------------------------------------------------------------------------------------------
  
  - (check) Generalize Functions in IntensityFunctionCollection
  - (check) Use Instantiate instead of FindObjectsWithTag
  - (check) Debug GameVariables.getTraits // Warning does never fire
- - implement checks for AbilityData integrity
+ - (check) implement checks for AbilityData integrity
+ - Corellation List: Which Abilities need which Traits? Or find a way to specify for each Ability the Traits that it needs
  
  --- ToDo: The Road to Life
  - Make a Baby
@@ -40,7 +71,8 @@
      - When displaying an Individuum, show the difference to it's species (genome-wise, Traits,
         Abilities).
      - When selecting an individuum, also highlight all of their species members and hint at their childs and parents with tiny arrows
- // (To What use?) - Use Tags to sort Individuals into groups. Use Trait based values such as Herbivore, Carnivore, Landliving, Waterliving, Airliving
+ - (To What use?) Use Tags to sort Individuals into groups. Use Trait based values such as Herbivore, Carnivore, Landliving, Waterliving, Airliving
+ - (Bonus) Make an EvolutionTree Document
  
  --- ToDo: Nachforschung
  - Make a fancy genom viewer
@@ -48,21 +80,6 @@
  - Genes that have high importance (correspond to many Traits), should be enlarged
  - Make long Genome Strings displayable by scrolling movement
  - Give the player opportunity to favorite Individuals and monitor theirs and their descendants fate
- - 
-
-  --- Designfragen ----------------------
-
- - scaling thoughts (2 ^ Intensity scheint eine gute Grundlage für einen kostanten Wert in einer Ability zu sein )
- - (check) Color Problem (Color Genom should mirror certain genes of the main Genom)
- - Juvenile Problem (start at 1/10 maxSize, then progress with each game tick)
- - Wann werden neue Traits in Nachkommen sichtbar? (zufällig, Techtree)
-
- - Sinnvoller Spielstart (Spieler wählt Startpunkt und Anfangsausrichtung der Spezies)
- - Motivierendenes Gameplay (Techtree, Mutationspunkte um Gene gezielt mutieren zu lassen, Individuen von der Fortpflanzung ausschließen)
- - Motivierendes Spielziel (eine intelligente Rasse hervorbringen, die eigene Spezies überleben lassen, ...)
- - Das Spiel angemesses schwierig gestalten (Tipps einblenden, dem Spieler mehr Macht geben)
-    - es ist duchaus vorstellbar, dass menschliche Spieler es nicht fertigbringen, eine funktionierende Spezies aufleben zu lassen. Schließlich
-      ist das Prinzip der Evolution selbst ein Optimierungsalgorithmus, der erst einmal übertroffen werden will.
 
 
  --- Verbesserungen -----------------------------
