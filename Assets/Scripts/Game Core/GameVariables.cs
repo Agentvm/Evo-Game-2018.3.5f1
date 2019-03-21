@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 
 public class GameVariables : MonoBehaviour
 {
@@ -19,6 +19,13 @@ public class GameVariables : MonoBehaviour
     public void initialize ()
     {
         
+    }
+
+
+    private void printDict<T> (Dictionary <T, T> dict)
+    {
+        foreach ( var key in dict.Keys )
+            Debug.Log (key + ", " + dict[key]);
     }
 
     /// <summary>

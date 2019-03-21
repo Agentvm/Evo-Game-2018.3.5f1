@@ -59,8 +59,8 @@ public class Grow : AbilityBaseClass
         Debug.Log ("grow_rate_intensity = " + grow_rate_intensity );
 
         // make babies bigger
-        size = 0.1f * max_size;
-        this.transform.localScale = new Vector3 (size, size, size); // should min_size be 1 ?
+        //size = 0.1f * max_size;
+        this.transform.localScale = new Vector3 (1 + size, 1 + size, 1 + size); // should min_size be 1 ?
     }
 
 
@@ -88,7 +88,7 @@ public class Grow : AbilityBaseClass
         {
             // sprites are sized 1, 1, 1
             size = Mathf.Min (max_size, size + growth_per_tick );
-            this.transform.localScale = new Vector3 (size, size, size); // scale the GameObject // should min_size be 1 ?
+            this.transform.localScale = new Vector3 (1 + size, 1 + size, 1 + size ); // scale the GameObject // should min_size be 1 ?
         }
         
     }

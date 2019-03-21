@@ -38,11 +38,23 @@ public class TraitManifestation
     /// <summary>
     /// Construct a single segment manifestation, assigning an Intensity.
     /// </summary>
-    public TraitManifestation ( Trait given_trait, int position, int given_intensity )
+    public TraitManifestation ( Trait given_trait, int position, List<string> genome_string, int given_intensity )
     {
         segments = new List<ManifestationSegment> ();
         trait = given_trait;
-        segments.Add (new ManifestationSegment (position, trait.Length)); // splitting of segments possible
+        if ( position < 0 ) position = genome_string.Count + position; // wrap
+        /*if ( position + trait.Length > genome_string.Count )
+        {
+            Debug.LogWarning ("The creator is not too sure about this piece of code");
+
+            // split segments for wrapping
+            segments.Add (new ManifestationSegment (position, genome_string.Count - position)); // splitting of segments possible
+            segments.Add (new ManifestationSegment (0, trait.Length - (genome_string.Count - position))); // splitting of segments possible
+        }
+        else*/
+            segments.Add (new ManifestationSegment (position, trait.Length)); // splitting of segments possible
+
+        // intensity is strictly set, though it may be overwritten
         intensity = given_intensity;
     }
     
@@ -54,7 +66,19 @@ public class TraitManifestation
     {
         segments = new List<ManifestationSegment> ();
         trait = given_trait;
-        segments.Add (new ManifestationSegment (position, trait.Length)); // splitting of segments possible
+        if ( position < 0 ) position = genome_string.Count + position; // wrap
+        /*if ( position + trait.Length > genome_string.Count)
+        {
+            Debug.LogWarning ("The creator is not too sure about this piece of code");
+
+            // split segments for wrapping
+            segments.Add (new ManifestationSegment (position, genome_string.Count - position)); // splitting of segments possible
+            segments.Add (new ManifestationSegment (0, trait.Length - (genome_string.Count - position ))); // splitting of segments possible
+        }
+        else*/
+            segments.Add (new ManifestationSegment (position, trait.Length)); // splitting of segments possible
+
+        // calculate Intensity on basis of Genome String
         updateIntensityStatus (genome_string );
     }
 
