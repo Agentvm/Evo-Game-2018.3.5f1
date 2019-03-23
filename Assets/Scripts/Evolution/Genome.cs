@@ -121,8 +121,8 @@ public class Genome {
 
         // fill a dictionary with the values of TraitManifestation.Segments (this one is a bit crude)
         Dictionary<int, int> segments_dict = new Dictionary<int, int> ();
-        foreach (KeyValuePair<int,int> segment in trait_manifested_in_genome.Segments)
-            segments_dict.Add (segment.Key, segment.Value);
+        foreach (ManifestationSegment segment in trait_manifested_in_genome.Segments)
+            segments_dict.Add (segment.position, segment.length);
 
         // get a dict<int, int> that shows the positions and lengths of overlapping space
         Dictionary<int, int> overlapping_segments = designateOverlappingSegments (segments_dict, number_of_overlapping_digits );
