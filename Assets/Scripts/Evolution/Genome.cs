@@ -119,13 +119,8 @@ public class Genome {
         TraitManifestation trait_manifested_in_genome = GetManifestation (type_of_trait_in_genome ); // get the manifested trait that the new one should overlap with
         if ( trait_manifested_in_genome == null ) return;
 
-        // fill a dictionary with the values of TraitManifestation.Segments (this one is a bit crude)
-        Dictionary<int, int> segments_dict = new Dictionary<int, int> ();
-        foreach (ManifestationSegment segment in trait_manifested_in_genome.Segments)
-            segments_dict.Add (segment.position, segment.length);
-
         // get a dict<int, int> that shows the positions and lengths of overlapping space
-        Dictionary<int, int> overlapping_segments = designateOverlappingSegments (segments_dict, number_of_overlapping_digits );
+        Dictionary<int, int> overlapping_segments = designateOverlappingSegments (trait_manifested_in_genome.Segments, number_of_overlapping_digits );
 
         if ( overlapping_segments.Count == 0 ) return;
         else if ( overlapping_segments.Count == 1 ) // just one segment means that the trait is coherent, e.g. at one stretch
