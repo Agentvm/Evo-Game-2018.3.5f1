@@ -43,6 +43,7 @@
  - (check) Debug GameVariables.getTraits // Warning does never fire
  - (check) implement checks for AbilityData integrity
  - Corellation List: Which Abilities need which Traits? Or find a way to specify for each Ability the Traits that it needs
+ - Implement a manifestTrait () - function that allows Trait Correlation between scattered Traits
  
  --- ToDo: The Road to Life
  - Make a Baby

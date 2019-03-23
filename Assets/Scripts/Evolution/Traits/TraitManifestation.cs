@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 // --- Container Class -------------------------------------------------
 public class ManifestationSegment
 {
@@ -16,7 +17,7 @@ public class ManifestationSegment
         position = given_position;
         length = given_length;
     }
-}
+}*/
 
 
 /*
@@ -25,14 +26,14 @@ Contains the position/distribution of the Trait in it's respective Genome. Compu
 public class TraitManifestation
 {
     private Trait trait;
-    private List<ManifestationSegment> segments; // the Trait can manifest itself in multiple segments. Their length combined matches Trait.Length
+    private Dictionary<int, int> segments = new Dictionary<int, int> (); // the Trait can manifest itself in multiple segments (position, length). Their combined length matches Trait.Length
     private int intensity; // because Intensity is not to change during the lifetime of a TraitManifestation, it is an attribute here
 
     // Properties
     public float Intensity { get => (float)intensity; } // expose trait Attributes so these can be easily read by Ability Scripts
     public float Length { get => (float)trait.Length; }
     public string Name { get => trait.Name; }
-    public List<ManifestationSegment> Segments { get => segments;}
+    public Dictionary<int, int> Segments { get => segments;}
 
     
     /// <summary>
@@ -40,7 +41,7 @@ public class TraitManifestation
     /// </summary>
     public TraitManifestation ( Trait given_trait, int position, List<string> genome_string, int given_intensity )
     {
-        segments = new List<ManifestationSegment> ();
+        //segments = new List<ManifestationSegment> ();
         trait = given_trait;
         if ( position < 0 ) position = genome_string.Count + position; // wrap
         /*if ( position + trait.Length > genome_string.Count )
@@ -52,7 +53,7 @@ public class TraitManifestation
             segments.Add (new ManifestationSegment (0, trait.Length - (genome_string.Count - position))); // splitting of segments possible
         }
         else*/
-            segments.Add (new ManifestationSegment (position, trait.Length)); // splitting of segments possible
+            segments.Add (position, trait.Length ); // splitting of segments possible
 
         // intensity is strictly set, though it may be overwritten
         intensity = given_intensity;
@@ -64,7 +65,7 @@ public class TraitManifestation
     /// </summary>
     public TraitManifestation ( Trait given_trait, int position, List<bool> genome_string )
     {
-        segments = new List<ManifestationSegment> ();
+        //segments = new List<ManifestationSegment> ();
         trait = given_trait;
         if ( position < 0 ) position = genome_string.Count + position; // wrap
         /*if ( position + trait.Length > genome_string.Count)
@@ -76,7 +77,7 @@ public class TraitManifestation
             segments.Add (new ManifestationSegment (0, trait.Length - (genome_string.Count - position ))); // splitting of segments possible
         }
         else*/
-            segments.Add (new ManifestationSegment (position, trait.Length)); // splitting of segments possible
+            segments.Add (position, trait.Length ); // splitting of segments possible
 
         // calculate Intensity on basis of Genome String
         updateIntensityStatus (genome_string );
@@ -92,14 +93,15 @@ public class TraitManifestation
         foreach ( int length in positions_and_lengths.Values ) overall_length += length;
         if ( overall_length != given_trait.Length ) return;
 
-        segments = new List<ManifestationSegment> ();
+        //segments = new List<ManifestationSegment> ();
         trait = given_trait;
 
         // generate Segments
-        foreach (int position_key in positions_and_lengths.Keys)
+        segments = new Dictionary<int, int> (positions_and_lengths );
+        /*foreach (int position_key in positions_and_lengths.Keys)
         {
-            segments.Add (new ManifestationSegment (position_key, positions_and_lengths[position_key])); // splitting of segments
-        }
+            segments.Add (position_key, positions_and_lengths[position_key] ); // splitting of segments
+        }*/
         
         updateIntensityStatus (genome_string);
     }
@@ -131,7 +133,28 @@ public class TraitManifestation
     private List<bool> getRelevantGenes ( List<bool> genome_string ) // should this take a Genome ?
     {
         List<bool> relevant_genes = new List<bool> ();
-        foreach ( ManifestationSegment segment in segments )
+
+        foreach (KeyValuePair<int, int> segment in segments )
+        {
+
+            for ( int i = 0; i < segment.Value; i++ ) // progress gene per gene (bool per bool)
+            {
+
+                if ( segment.Key + i >= genome_string.Count ) // wrap
+                {
+                    //Debug.Log ("wrapping, Add genome_string[" + segment.position + " + " + i + " - " + genome_string.Count + "]");
+                    relevant_genes.Add (genome_string[segment.Key + i - genome_string.Count]); // start again at the beginning of genome
+                }
+                else // still in bounds
+                {
+                    //Debug.Log ("in bounds, Add genome_string[" + segment.position + " + " + i + "]");
+                    relevant_genes.Add (genome_string[segment.Key + i]);
+                }
+            }
+
+        }
+
+        /*foreach ( ManifestationSegment segment in segments )
         {
 
             for ( int i = 0; i < segment.length; i++ ) // progress gene per gene (bool per bool)
@@ -149,7 +172,7 @@ public class TraitManifestation
                 }
             }
 
-        }
+        }*/
 
         if ( relevant_genes.Count != Length )
             Debug.LogError ("Assertion failed. Relevant genes length does not match Lenght of Trait " + Name + ".");

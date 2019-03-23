@@ -128,19 +128,21 @@ public class Genome {
         Dictionary<int, int> overlapping_segments = designateOverlappingSegments (segments_dict, number_of_overlapping_digits );
 
         if ( overlapping_segments.Count == 0 ) return;
-        if ( overlapping_segments.Count == 1 ) // just one segment means that the trait is coherent, e.g. at one stretch
+        else if ( overlapping_segments.Count == 1 ) // just one segment means that the trait is coherent, e.g. at one stretch
         {
             // Find the position before the begin of the overlapping space, so that the number ob overlapping digits is overlapping_segments[0].
             int position = overlapping_segments.ElementAt(0).Key - (new_trait.Length - overlapping_segments[0] );
             trait_manifestations.Add (new TraitManifestation (new_trait, position, genome_string));
         }
-        else
+        /*else
         {
             // take all determined overlapping segments
             Dictionary<int, int> new_trait_manifestation_space = new Dictionary<int, int> (overlapping_segments);
 
             // find more segments that do not overlap
-        }
+
+            // scatter random segments in genome
+        }*/
     }
 
     private int intDictOverallLength (Dictionary<int, int> dict)
@@ -148,6 +150,34 @@ public class Genome {
         int length = 0;
         foreach ( int key in dict.Keys ) length += dict[key];
         return length;
+    }
+
+    private Dictionary<int, int> inverseGenome (Dictionary <int, int> segments )
+    {
+        // add one segment of the length of this Genome string
+        Dictionary<int, int> inverse_segments = new Dictionary<int, int> ();
+        //inverse_segments.Add (0, this.genome_string.Count);
+
+        // remove the segments given from inverse_segments, splitting it into several new segments 
+        foreach (int key in segments.Keys)
+        {
+            // check for overlappings
+            // if the start or end points of a range in inverse_genome are between the currently processed segments' end and begin points
+            // or if the sements' start (and end) points are in the range of any inverse_genome range
+        }
+
+        return inverse_segments;
+    }
+
+    bool isInRange (Dictionary<int, int> basis, KeyValuePair<int, int> element)
+    {
+        foreach (KeyValuePair<int, int> basis_pair in basis)
+        {
+
+        }
+
+
+        return false;
     }
 
     private Dictionary<int, int> designateOverlappingSegments ( Dictionary<int, int> dict, int length )
