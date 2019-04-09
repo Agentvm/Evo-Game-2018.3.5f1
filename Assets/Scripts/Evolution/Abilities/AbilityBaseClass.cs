@@ -11,7 +11,7 @@ using UnityEngine;
  */
  // https://docs.unity3d.com/ScriptReference/RequireComponent.html
 [RequireComponent (typeof (Character))]
-public class AbilityBaseClass : MonoBehaviour
+public abstract class AbilityBaseClass : MonoBehaviour
 {
     // Variables
     protected Character character; // reference to the Character script attached to the same GameObject
