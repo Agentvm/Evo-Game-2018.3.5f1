@@ -54,13 +54,14 @@
     - Water mechanic (Weather is not to be implemented until later)
     - Nutrient mechanic (complete with dead animals and poop)
  - Project Herbivore: Make Animals that live of plants
- - Project Carnivore: Make Animals that live of Animals that live of plants (and of dead)
+ - Project Carnivore: Make Animals that live of Animals that live of plants (and of unfortunate accidents)
  - Give them a home: Terretories
  - Up Above and Down Below: Make Water (River and Lake) and Air (Treetop and Cliff)
  - Awake the Spirits of the Planet (Day/Night, Seasons, Heat & Cold, Clouds, Rain, Katasthrophes)
  - Bonus: Mutating Illnesses
 
  --- ToDo: Übersicht
+ - Edit the GameVariables.tick() behaviour so more complicated actions are possible. Setting a current goal would be nice.
  - (check) Make species distiguishable by color
  - Make species distinguishable by icon (sprite). (Ein Ansatz könnte sein, Individuen mit wenigen, einigen und vielen aktivierten Genen im Genom (Einsen
     im Genome) mit jeweils einem anderen Sprite zu kennzeichnen.)

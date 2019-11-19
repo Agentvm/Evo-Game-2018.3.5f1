@@ -53,7 +53,7 @@ public class GameVariables : MonoBehaviour
     public void gameTick ( int times = 1 )
     {
         updateIndividuumLexicon ();
-        Debug.Log ("The Lexicon has " + individuals_lexicon.Count + " entries.");
+        //Debug.Log ("The Lexicon has " + individuals_lexicon.Count + " entries.");
 
         for ( int a = 0; a < times; a++ )
         {

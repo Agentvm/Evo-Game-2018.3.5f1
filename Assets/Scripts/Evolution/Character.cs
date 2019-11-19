@@ -40,6 +40,7 @@ public class Character : MonoBehaviour {
         if (new_traits != null)
         {
             foreach (TraitTypes type in new_traits)
+                // This will cause trouble: The genome is slowly mutated, but trait positions are random? This will cause random trait manifestiations
                 genome.manifestTrait (TraitData.getTrait (type )); // random Trait positions in genome
         }
         traits_initialized = true; // set this byte, so Abilities can initialize with traits
