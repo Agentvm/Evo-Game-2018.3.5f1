@@ -32,7 +32,7 @@ public class Character : MonoBehaviour {
     /// </summary>
     /// <param name="mutated_parent_genome"></param>
     /// <param name="new_traits"></param>
-    public void initialize ( Genome mutated_parent_genome, List<TraitTypes> new_traits, List<AbilityTypes> new_abilities )
+    public void Birth ( Genome mutated_parent_genome, List<TraitTypes> new_traits, List<AbilityTypes> new_abilities )
     {
         genome = mutated_parent_genome;
 
@@ -43,7 +43,7 @@ public class Character : MonoBehaviour {
                 // This will cause trouble: The genome is slowly mutated, but trait positions are random? This will cause random trait manifestiations
                 genome.manifestTrait (TraitData.getTrait (type )); // random Trait positions in genome
         }
-        traits_initialized = true; // set this byte, so Abilities can initialize with traits
+        traits_initialized = true; // set this bool, so Abilities can initialize with traits
 
 
         // add abilities (request list of abilities for this Constructor?)

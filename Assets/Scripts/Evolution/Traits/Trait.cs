@@ -42,6 +42,7 @@ public class Trait
     {
         type = trait_type;
         length = trait_length;
+        interwoven_traits = relations;
         IntensityStatus = intensity_function;
         interwoven_traits = null;
     }

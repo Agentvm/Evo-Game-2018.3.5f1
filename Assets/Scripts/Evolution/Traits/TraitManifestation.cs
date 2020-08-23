@@ -39,7 +39,7 @@ public class TraitManifestation
     /// <summary>
     /// Construct a single segment manifestation, assigning an Intensity.
     /// </summary>
-    public TraitManifestation ( Trait given_trait, int position, List<string> genome_string, int given_intensity )
+    public TraitManifestation ( Trait given_trait, int position, List<bool> genome_string, int given_intensity )
     {
         //segments = new List<ManifestationSegment> ();
         trait = given_trait;
