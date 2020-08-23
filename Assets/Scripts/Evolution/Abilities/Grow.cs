@@ -15,10 +15,14 @@ public class Grow : AbilityBaseClass
     public string Name { get => (this.GetType ()).ToString (); }
     */
 
+    // Traits
+    TraitField _maxSizeTrait;
+    TraitField _growRateTrait;
+
     // Variables
-    private float size = 1f;
-    float max_size;
-    float growth_per_tick; // means game tick
+    private float _size = 1f;
+    float _maxSize;
+    float _growthPerTick; // means game tick
 
     /*
     // Start is called before the first frame update
@@ -33,34 +37,31 @@ public class Grow : AbilityBaseClass
     /// Is called as soon as character.TraitsInitialized is set to True.
     /// Retrieves all Traits this Ability is based on, as well as their Intensities (which will not change), then calculates all constant values that follow of these.
     /// </summary>
-    override public void evaluateIntensity ()
+    override public void initializeAbility ()
     {
-        //TraitManifestations = character.Genome.getTraitManifestations (new List<string> () { "MaxSize", "GrowRate" });
+        _maxSizeTrait = new TraitField (TraitTypes.MaxSize, this._character);
+        _growRateTrait = new TraitField (TraitTypes.GrowRate, this._character);
 
-        // get Intensities and lenghts
-        float max_size_intensity = this.character.Genome.GetManifestation (TraitTypes.MaxSize ).Intensity;
-        float max_size_length = this.character.Genome.GetManifestation (TraitTypes.MaxSize ).Length;
-        float grow_rate_intensity = this.character.Genome.GetManifestation (TraitTypes.GrowRate ).Intensity;
-        float grow_rate_length = this.character.Genome.GetManifestation (TraitTypes.GrowRate ).Length;
+        //TraitManifestations = character.Genome.getTraitManifestations (new List<string> () { "MaxSize", "GrowRate" });
 
         // calculate the values that remain fixed
         // MaxSize
-        float relative_max_size = max_size_intensity / max_size_length;
-        max_size = Mathf.Pow (2, (float)relative_max_size + 1f); // rises exponentially: 2 to the power of 1f - 2f
+        float relative_max_size = _maxSizeTrait.Intensity / _maxSizeTrait.Length;
+        _maxSize = Mathf.Pow (2, (float)relative_max_size + 1f); // rises exponentially: 2 to the power of 1f - 2f
 
         // GrowRate
-        float relative_rate_of_growth = grow_rate_intensity / grow_rate_length;
         // min rate = 400^1 / 400^2 = 0,0025 --> 100 years to full growth | max rate = 400^2 / 400^2 = 1 --> 1 Season to full growth | mean rate = 400^1.5 / 400^2 = 0.05 --> 5 Years to full growth
+        float relative_rate_of_growth = _growRateTrait.Intensity / _growRateTrait.Length;
         float normalized_rate_of_growth  =  Mathf.Pow (400f, 1f + (float)relative_rate_of_growth) / (float)(400f*400f);
-        growth_per_tick = normalized_rate_of_growth * max_size;
+        _growthPerTick = normalized_rate_of_growth * _maxSize;
 
-        Debug.Log ("Genome = " + printGenome (character.Genome ));
-        Debug.Log ("max_size_intensity = " + max_size_intensity );
-        Debug.Log ("grow_rate_intensity = " + grow_rate_intensity );
+        Debug.Log ("Genome = " + printGenome (_character.Genome ));
+        Debug.Log ("MaxSize.Intensity = " + _maxSizeTrait.Intensity );
+        Debug.Log ("GrowRate.Intensity = " + _growRateTrait.Intensity );
 
         // make babies bigger
         //size = 0.1f * max_size;
-        this.transform.localScale = new Vector3 (1 + size, 1 + size, 1 + size); // should min_size be 1 ?
+        this.transform.localScale = new Vector3 (1 + _size, 1 + _size, 1 + _size); // should min_size be 1 ?
     }
 
 
@@ -84,11 +85,11 @@ public class Grow : AbilityBaseClass
     /// </summary>
     override public void Tick ()
     {
-        if (size < max_size )
+        if (_size < _maxSize )
         {
             // sprites are sized 1, 1, 1
-            size = Mathf.Min (max_size, size + growth_per_tick );
-            this.transform.localScale = new Vector3 (1 + size, 1 + size, 1 + size ); // scale the GameObject // should min_size be 1 ?
+            _size = Mathf.Min (_maxSize, _size + _growthPerTick );
+            this.transform.localScale = new Vector3 (1 + _size, 1 + _size, 1 + _size ); // scale the GameObject // should min_size be 1 ?
         }
         
     }

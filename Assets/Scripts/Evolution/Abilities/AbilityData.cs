@@ -8,25 +8,24 @@ public enum AbilityTypes { Grow };
 // It takes care of the initialization of the basic data structures (Traits that Characters have or develop).
 public static class AbilityData
 {
-
     private static System.Type[] available_ability_types = new System.Type[1];
 
 
     static AbilityData ()
     {
 
-        // add Abilities
+        // Add Abilities
         available_ability_types[(int)AbilityTypes.Grow] = typeof (Grow);
 
 
-        // check that every entry of enum has been set
+        // Check that every entry of enum has been set
         for ( int i = 0; i < AbilityTypes.GetNames (typeof (AbilityTypes)).Length; i++ ) // number of enum variants
         {
             if ( available_ability_types[i] == null )
                 Debug.LogError ("The Ability " + ((AbilityTypes)i).ToString () + " at position available_ability_types[" + i + "] has not been set correctly.");
         }
 
-        // check that enum and array match each other
+        // Check that enum and array match each other
         for ( int i = 0; i < AbilityTypes.GetNames (typeof (AbilityTypes)).Length; i++ )
         {
             if ( available_ability_types[i].Name != ((AbilityTypes)i).ToString () )

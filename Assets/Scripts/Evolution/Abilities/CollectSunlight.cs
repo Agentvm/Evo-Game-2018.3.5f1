@@ -3,17 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent (typeof (Character))]
-public class CollectSunlight : MonoBehaviour
+[RequireComponent (typeof (GrowLeaves))]
+public class CollectSunlight : AbilityBaseClass
 {
-    // Start is called before the first frame update
-    void Start()
+    // References
+    GrowLeaves _growLeavesAbility;
+
+    // 
+    private float _currentSaturation = 0f;
+    float _maxSaturation = 1f;
+    float _saturationPerTick; // means game tick
+
+    public float CurrentSaturation { get => _currentSaturation; }
+
+    public bool SubtractSaturation (float amount)
     {
+        if ( _currentSaturation >= amount)
+        {
+            _currentSaturation -= amount;
+            return true;
+        }
+
+        return false;
+    }
+
+    override public void initializeAbility ()
+    {
+        //// Get References
+        _growLeavesAbility = this.GetComponent<GrowLeaves> ();
+
+        // Initialize
+        _saturationPerTick = _growLeavesAbility.
         
     }
 
-    // Update is called once per frame
-    void Update()
+    override public void Tick ()
     {
-        
+        if ( _currentSaturation < _maxSaturation )
+            _currentSaturation += _saturationPerTick;
     }
 }

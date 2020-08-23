@@ -9,12 +9,12 @@ using UnityEngine;
  * Examples of this are Eating, Growing, Mating.
  * 
  */
- // https://docs.unity3d.com/ScriptReference/RequireComponent.html
+// https://docs.unity3d.com/ScriptReference/RequireComponent.html
 [RequireComponent (typeof (Character))]
 public abstract class AbilityBaseClass : MonoBehaviour
 {
     // Variables
-    protected Character character; // reference to the Character script attached to the same GameObject
+    protected Character _character; // reference to the Character script attached to the same GameObject
     //protected Dictionary<string, TraitManifestation> TraitManifestations = new Dictionary<string, TraitManifestation> { }; // for Trait access
      
 
@@ -24,7 +24,7 @@ public abstract class AbilityBaseClass : MonoBehaviour
 
     protected /*virtual*/ void Start ()
     {
-        character = GetComponent<Character> (); // get reference
+        _character = GetComponent<Character> (); // get reference
         StartCoroutine (waitForInitialization ()); // Start a waiting coroutine
     }
 
@@ -34,17 +34,17 @@ public abstract class AbilityBaseClass : MonoBehaviour
     /// </summary>
     protected IEnumerator waitForInitialization ()
     {
-        yield return new WaitUntil (() => character.TraitsInitialized == true);
+        yield return new WaitUntil (() => _character.TraitsInitialized == true);
 
         // if character has been initialized, get the traits you need
-        evaluateIntensity ();
+        initializeAbility ();
     }
 
 
     /// <summary>
     /// Initialization method of this Class (Because Constructors don't work for MonoBehaviours). Retrieves all Traits this Ability is based on, then calculates all constant values that follow of these.
     /// </summary>
-    public virtual void evaluateIntensity ()
+    public virtual void initializeAbility ()
     {
         //TraitManifestations = character.Genome.getTraitManifestations (new List<string> () { });
 
