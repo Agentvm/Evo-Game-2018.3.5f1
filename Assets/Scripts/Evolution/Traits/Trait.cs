@@ -6,7 +6,7 @@ using UnityEngine;
 
     Class for genetic Traits in Characters (Animals, Plants, etc.).
     Traits determine the constitution of an organism by setting the basis of assessment for a certain feature or property of the life form.
-    This is, for example, it's size or the number of it's offspring.
+    That is, for example, it's size or the number of it's offspring.
 
 */
 public class Trait

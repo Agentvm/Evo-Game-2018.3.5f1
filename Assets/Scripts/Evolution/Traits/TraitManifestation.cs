@@ -21,7 +21,7 @@ public class ManifestationSegment
 
 
 /*
-Contains the position/distribution of the Trait in it's respective Genome. Computes Trait Intensity in this certain Genome. 
+Contains the position/distribution of the Trait in its respective Genome. Computes Trait Intensity in this certain Genome. 
  */
 public class TraitManifestation
 {
