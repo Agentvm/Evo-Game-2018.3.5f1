@@ -15,13 +15,19 @@
     -> Aber gerade dann könnte es sinnvoll sein, erst eine stabile Version herzustellen, bevor man am Ende vor einem wirren Knäuel an kaputten
         Beziehungen steht.
 
- - Wie passen Metaaktionen wie Sterben/Fortpflanzen in das Konzept einer Ability? Muss evt ein anderes Konzept genutzt werden?
+ - (Schwerwiegend) Wann werden neue Traits/Abilities in Nachkommen sichtbar? (zufällig, Techtree, Anzahl aktivierter Gene, bestimmte Genkombinationen)
+                   Kann das Kriterium dafür in der Klasse der Ability untergebracht werden, ähnlich wie in der IntensityFunctionCollection?
 
- - scaling thoughts (2 ^ Intensity scheint eine gute Grundlage für einen kostanten Wert in einer Ability zu sein )
+ - Wird die Länge eines Genoms erhöht?
+
+ - Wie passen Metaaktionen wie Sterben/Fortpflanzen in das Konzept einer Ability? Muss evt ein anderes Konzept genutzt werden?
+    -> Da eine Ability Zugriff auf den _character hat, kann sie so ziemlich alles lostreten, das sollte kein Problem sein.
+
+ - scaling thoughts (2 ^ Intensity scheint eine gute Grundlage für einen konstanten Wert in einer Ability zu sein )
  - (check) Color Problem (Color Genom should mirror certain genes of the main Genom)
  - Juvenile Problem (start at 1/10 maxSize, then progress with each game tick)
 
- - (Schwerwiegend) Wann werden neue Traits/Abilities in Nachkommen sichtbar? (zufällig, Techtree)
+
  
  - (Schwerwiegend) Zeitproblem: Evolutive Entwicklungen zeigen sich erst im Verlauf mehrerer hundert Jahre, aber man will auch den Tagesablauf eines Wesens
     im Stil eines Terrariums sehen können.
@@ -46,6 +52,8 @@
  - Implement a manifestTrait () - function that allows Trait Correlation between scattered Traits
  
  --- ToDo: The Road to Life
+ - Add a measure of life energy to the Character class. It is depleted for growth and filled by photosynthesis or nourishment
+ - Make Plants fight for light: Size means Height to put others below you and LeavesDensity means both increasing income and shadowing others
  - Make a Baby
  - Invite the Reaper for Tea
  - Project Evergreen: Make Plants
@@ -104,7 +112,7 @@
     Gesamtanzahl der aktivierten Gene kann hoch oder niedrig sein, solange nur eine der geraden oder ungeraden Stellen nicht aktiviert wird, ist
     das Ergebnis für beide Traits offen, sie können voneinander unabhängig eine vorteilhafte Ausprägung annehmen.
  - (check) Use Delegates to make Character Abilities work
- - Eine Liste an Vorlieben, die Ess- und Lagergewohnheiten eines Character zusammenfasst. Integerwerte, die durch Gaussmutation bei der Vererbung verändert
+ - Eine Liste an Vorlieben, die Essgewohnheiten eines Character zusammenfasst. Integerwerte, die durch Gaussmutation bei der Vererbung verändert
     werden.
  - Let every Charakter have a second, "preferences" genom, that can be altered aswell. This is used to evolve feeding and wandering routines.
  - Gleiche (grundlegende) Traits wie "MaxSize" immer an die gleiche Position im Genom legen. Eventuell Trait.Position wieder einführen.
