@@ -24,6 +24,9 @@ public class Grow : AbilityBaseClass
     float _maxSize;
     float _growthPerTick; // means game tick
 
+    public float GrowthPerTick { get => _growthPerTick; }
+    public float MaxSize { get => _maxSize; }
+
     /*
     // Start is called before the first frame update
     override protected void Start ()
@@ -54,10 +57,6 @@ public class Grow : AbilityBaseClass
         float relative_rate_of_growth = _growRateTrait.Intensity / _growRateTrait.Length;
         float normalized_rate_of_growth  =  Mathf.Pow (400f, 1f + (float)relative_rate_of_growth) / (float)(400f*400f);
         _growthPerTick = normalized_rate_of_growth * _maxSize;
-
-        Debug.Log ("Genome = " + printGenome (_character.Genome ));
-        Debug.Log ("MaxSize.Intensity = " + _maxSizeTrait.Intensity );
-        Debug.Log ("GrowRate.Intensity = " + _growRateTrait.Intensity );
 
         // make babies bigger
         //size = 0.1f * max_size;
@@ -90,6 +89,7 @@ public class Grow : AbilityBaseClass
             // sprites are sized 1, 1, 1
             _size = Mathf.Min (_maxSize, _size + _growthPerTick );
             this.transform.localScale = new Vector3 (1 + _size, 1 + _size, 1 + _size ); // scale the GameObject // should min_size be 1 ?
+            Debug.Log ("CurrentSize: " + _size);
         }
         
     }

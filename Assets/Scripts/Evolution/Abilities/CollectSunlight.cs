@@ -33,13 +33,12 @@ public class CollectSunlight : AbilityBaseClass
         _growLeavesAbility = this.GetComponent<GrowLeaves> ();
 
         // Initialize
-        _saturationPerTick = _growLeavesAbility.
-        
+        _saturationPerTick = _growLeavesAbility.CurrentLeavesArea;
     }
 
     override public void Tick ()
     {
         if ( _currentSaturation < _maxSaturation )
-            _currentSaturation += _saturationPerTick;
+            _currentSaturation = Mathf.Min (_saturationPerTick + CurrentSaturation, _maxSaturation);
     }
 }
