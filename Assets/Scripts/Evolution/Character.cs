@@ -59,8 +59,13 @@ public class Character : MonoBehaviour {
         //    // good to know
         //    // ((MySpellScript)GetComponent(mType)).Fire();
         //}
+    }
 
-
+    public void SetAlpha (float newAlpha)
+    {
+        Color temporaryColor = sprite.color;
+        temporaryColor.a = newAlpha;
+        sprite.color = temporaryColor;
     }
 
     // maybe make this function scale to represent the whole string? (scaling is bad, because in binary code, the first digit will get extreme impact)
