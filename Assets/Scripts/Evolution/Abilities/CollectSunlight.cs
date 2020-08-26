@@ -9,31 +9,24 @@ public class CollectSunlight : AbilityBaseClass
     // References
     GrowLeaves _growLeavesAbility;
 
-    // 
-    private float _currentSaturation = 0f;
-    float _maxSaturation = 1f;
+    // Traits
+    TraitField _lightRequirementTrait;
+
+    // Values
     float _saturationPerTick; // means game tick
+    float _preservationEnergyPerTick;
 
-    public float CurrentSaturation { get => _currentSaturation; }
-
-    public bool SubtractSaturation (float amount)
+    override public void InitializeAbility ()
     {
-        if ( _currentSaturation >= amount)
-        {
-            _currentSaturation -= amount;
-            return true;
-        }
-
-        return false;
-    }
-
-    override public void initializeAbility ()
-    {
-        //// Get References
+        // Get References
         _growLeavesAbility = this.GetComponent<GrowLeaves> ();
+
+        // Get Traits
+        _lightRequirementTrait = new TraitField (TraitTypes.LightRequirement, _character);
 
         // Initialize
         _saturationPerTick = _growLeavesAbility.CurrentLeavesArea;
+        _preservationEnergyPerTick = _lightRequirementTrait.Intensity / _lightRequirementTrait.Length / 10;        
     }
 
     override public void Tick ()

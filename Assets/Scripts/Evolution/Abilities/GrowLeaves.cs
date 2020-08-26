@@ -23,7 +23,7 @@ public class GrowLeaves : AbilityBaseClass
 
     public float CurrentLeavesArea { get => _currentLeavesArea; }
 
-    override public void initializeAbility ()
+    override public void InitializeAbility ()
     {
         // Get References
         _collectSunlightAbility = this.GetComponent<CollectSunlight> ();
@@ -38,10 +38,8 @@ public class GrowLeaves : AbilityBaseClass
         _maxLeavesArea = _leavesDensityTrait.Intensity;
         _character.SetAlpha (_currentLeavesArea / _maxLeavesArea);
 
-        // Set initial value for LightRequirement
-        _lightRequirement = _lightRequirementTrait.Intensity / _lightRequirementTrait.Length;
-
-        // Set inital value for Growth
+        // Set initial value for LightRequirement and Growth
+        _lightRequirement = _lightRequirementTrait.Intensity / _lightRequirementTrait.Length / 10;
         _growthPerTick = _growAbility.GrowthPerTick;
     }
 

@@ -40,10 +40,13 @@ public class Grow : AbilityBaseClass
     /// Is called as soon as character.TraitsInitialized is set to True.
     /// Retrieves all Traits this Ability is based on, as well as their Intensities (which will not change), then calculates all constant values that follow of these.
     /// </summary>
-    override public void initializeAbility ()
+    override public void InitializeAbility ()
     {
         _maxSizeTrait = new TraitField (TraitTypes.MaxSize, this._character);
         _growRateTrait = new TraitField (TraitTypes.GrowRate, this._character);
+
+        //Debug.Log ("_maxSizeTrait.Intensity: " + _maxSizeTrait.Intensity);
+        //Debug.Log ("_growRateTrait.Intensity: " + _growRateTrait.Intensity);
 
         //TraitManifestations = character.Genome.getTraitManifestations (new List<string> () { "MaxSize", "GrowRate" });
 
@@ -65,7 +68,7 @@ public class Grow : AbilityBaseClass
 
 
     // helper function that does not really belong here
-    private string printGenome (Genome genome )
+    private string PrintGenome (Genome genome )
     {
         string str = "";
 
@@ -88,8 +91,8 @@ public class Grow : AbilityBaseClass
         {
             // sprites are sized 1, 1, 1
             _size = Mathf.Min (_maxSize, _size + _growthPerTick );
-            this.transform.localScale = new Vector3 (1 + _size, 1 + _size, 1 + _size ); // scale the GameObject // should min_size be 1 ?
-            Debug.Log ("CurrentSize: " + _size);
+            if ( this != null && this.transform != null && this.gameObject != null)
+                this.transform.localScale = new Vector3 (1 + _size, 1 + _size, 1 + _size ); // scale the GameObject // should min_size be 1 ?
         }
         
     }
