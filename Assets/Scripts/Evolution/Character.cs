@@ -6,24 +6,52 @@ using UnityEngine;
 [RequireComponent (typeof (SpriteRenderer))]
 public class Character : MonoBehaviour {
 
-    private Genome genome;
-    private SpriteRenderer sprite;
-    private bool traits_initialized = false;
-    private List<AbilityBaseClass> abilities = new List<AbilityBaseClass> ();
+    // In-game values
+    private float _energy = 0f;
+    private float _maxEnergy = 1f;
+
+    // Innards
+    private Genome _genome;
+    private SpriteRenderer _sprite;
+    private bool _traitsInitialized = false;
+    private List<AbilityBaseClass> _abilities = new List<AbilityBaseClass> ();
     //private float size;
 
     // Properties
-    public Genome Genome { get => genome; }
-    //public List<Trait> Traits { get => genome.Traits; } // currently not necessary
-    public bool TraitsInitialized { get => traits_initialized; } // Are a genom and all necessary traits attatched?
+    public Genome Genome { get => _genome; }
+    public bool TraitsInitialized { get => _traitsInitialized; } // Are a genom and all necessary traits attatched?
+    public float Energy { get => _energy; }
 
     //public float Size { get => size;}
     //public Color Color { get => color; }
 
     private void Start () // called after Constructor
     {
-        sprite = GetComponent<SpriteRenderer> (); // get reference to sprite so you can change it's color
-        setColorbyGenome ();
+        _sprite = GetComponent<SpriteRenderer> (); // get reference to sprite so you can change it's color
+        SetColorbyGenome ();
+    }
+
+    public void SubtractPreservationEnergy ( float amount )
+    {
+        if ( !SubtractEnergy (amount) && this != null)
+            Destroy (this.gameObject);
+    }
+
+    public bool SubtractEnergy ( float amount )
+    {
+        if ( Energy >= amount )
+        {
+            _energy -= amount;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void AddEnergy ( float amount )
+    {
+        if ( Energy + amount <= _maxEnergy )
+            _energy += amount;
     }
 
 
@@ -34,7 +62,7 @@ public class Character : MonoBehaviour {
     /// <param name="new_traits"></param>
     public void Birth ( Genome mutated_parent_genome, List<TraitTypes> new_traits, List<AbilityTypes> new_abilities )
     {
-        genome = mutated_parent_genome;
+        _genome = mutated_parent_genome;
 
         // add Traits to genome
         if (new_traits != null)
@@ -42,9 +70,9 @@ public class Character : MonoBehaviour {
             foreach (TraitTypes type in new_traits)
                 // This will cause trouble: The genome is slowly mutated, but trait positions are random? This will cause random trait manifestiations (But only for new Traits)
                 // Question: Are the existing TraitManifestations wiped out when the parents genome is given to the child?
-                genome.manifestTrait (TraitData.getTrait (type )); // random Trait positions in genome
+                _genome.manifestTrait (TraitData.getTrait (type )); // random Trait positions in genome
         }
-        traits_initialized = true; // set this bool, so Abilities can initialize with traits
+        _traitsInitialized = true; // set this bool, so Abilities can initialize with traits
 
 
         // add abilities (request list of abilities for this Constructor?)
@@ -64,9 +92,9 @@ public class Character : MonoBehaviour {
 
     public void SetAlpha (float newAlpha)
     {
-        Color temporaryColor = sprite.color;
+        Color temporaryColor = _sprite.color;
         temporaryColor.a = newAlpha;
-        sprite.color = temporaryColor;
+        _sprite.color = temporaryColor;
     }
 
     // maybe make this function scale to represent the whole string? (scaling is bad, because in binary code, the first digit will get extreme impact)
@@ -74,30 +102,30 @@ public class Character : MonoBehaviour {
     /// Changes the color of the sprite in respect to the first 32 digits of the GenomeString.
     /// Binary to Decimal conversion of respectively 8 digits (boolean values in genome_string) is used.
     /// </summary>
-    void setColorbyGenome ()
+    void SetColorbyGenome ()
     {
-        if (genome.GenomeString.Count < 24) // vermin
+        if (_genome.GenomeString.Count < 24) // vermin
         {
-            sprite.color = new Color (0.1f, 0.1f, 0.1f, 0.6f);
+            _sprite.color = new Color (0.1f, 0.1f, 0.1f, 0.6f);
 
         }
-        else if (genome.GenomeString.Count < 32)
+        else if (_genome.GenomeString.Count < 32)
         {
-            float r = binaryToDecimal (genome.GenomeString.GetRange (0, 8) ) / 256; // convert the first 8 digits to a decimal number, which is then normalized to match the 0 - 1f range
-            float g = binaryToDecimal (genome.GenomeString.GetRange (8, 8) ) / 256;
-            float b = binaryToDecimal (genome.GenomeString.GetRange (16, 8) ) / 256;
+            float r = BinaryToDecimal (_genome.GenomeString.GetRange (0, 8) ) / 256; // convert the first 8 digits to a decimal number, which is then normalized to match the 0 - 1f range
+            float g = BinaryToDecimal (_genome.GenomeString.GetRange (8, 8) ) / 256;
+            float b = BinaryToDecimal (_genome.GenomeString.GetRange (16, 8) ) / 256;
             float a = 0.8f;
 
-            sprite.color = new Color (r, g, b, a);
+            _sprite.color = new Color (r, g, b, a);
         }
         else
         {
-            float r = binaryToDecimal (genome.GenomeString.GetRange (0, 8) ) / 256;
-            float g = binaryToDecimal (genome.GenomeString.GetRange (8, 8) ) / 256;
-            float b = binaryToDecimal (genome.GenomeString.GetRange (16, 8) ) / 256;
-            float a = Mathf.Min (binaryToDecimal (genome.GenomeString.GetRange (24, 8) ) / 256, 0.5f);
+            float r = BinaryToDecimal (_genome.GenomeString.GetRange (0, 8) ) / 256;
+            float g = BinaryToDecimal (_genome.GenomeString.GetRange (8, 8) ) / 256;
+            float b = BinaryToDecimal (_genome.GenomeString.GetRange (16, 8) ) / 256;
+            float a = Mathf.Min (BinaryToDecimal (_genome.GenomeString.GetRange (24, 8) ) / 256, 0.5f);
 
-            sprite.color = new Color (r, g, b, a );
+            _sprite.color = new Color (r, g, b, a );
         }
         
         //sprite.color = color;
@@ -107,7 +135,7 @@ public class Character : MonoBehaviour {
     /// <summary>
     /// Does what is says, but uses a List<Bool> as input.
     /// </summary>
-    float binaryToDecimal ( List<bool> list )
+    float BinaryToDecimal ( List<bool> list )
     {
         int iteration = 0;
         float result = 0;

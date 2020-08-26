@@ -47,9 +47,10 @@ public class GrowLeaves : AbilityBaseClass
 
     override public void Tick ()
     {
-        if ( _collectSunlightAbility.SubtractSaturation (_lightRequirement) )
+        // Grow Leaves
+        if ( _character.SubtractEnergy (_lightRequirement) )
         {
-            _currentLeavesArea = Mathf.Min (_growthPerTick+ _currentLeavesArea, _maxLeavesArea);
+            _currentLeavesArea = Mathf.Min (_growthPerTick + _currentLeavesArea, _maxLeavesArea);
             _character.SetAlpha (_currentLeavesArea / _maxLeavesArea);
             Debug.Log ("Current Leaves Area: " + _currentLeavesArea);
         }

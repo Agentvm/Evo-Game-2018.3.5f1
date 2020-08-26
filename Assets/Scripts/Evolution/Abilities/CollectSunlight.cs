@@ -38,7 +38,9 @@ public class CollectSunlight : AbilityBaseClass
 
     override public void Tick ()
     {
-        if ( _currentSaturation < _maxSaturation )
-            _currentSaturation = Mathf.Min (_saturationPerTick + CurrentSaturation, _maxSaturation);
+        _character.AddEnergy (_saturationPerTick);
+
+        // Upkeep
+        _character.SubtractPreservationEnergy (_preservationEnergyPerTick);
     }
 }
