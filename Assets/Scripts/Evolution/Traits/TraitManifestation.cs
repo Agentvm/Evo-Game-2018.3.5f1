@@ -130,7 +130,7 @@ public class TraitManifestation
     /// <summary>
     /// Given a GenomeString and all ManifestationSegments of this TraitManifestation, extract the values that are indicated by the segments.
     /// </summary>
-    private List<bool> getRelevantGenes ( List<bool> genome_string ) // should this take a Genome ?
+    public List<bool> getRelevantGenes ( List<bool> genome_string ) // should this take a Genome ?
     {
         List<bool> relevant_genes = new List<bool> ();
 

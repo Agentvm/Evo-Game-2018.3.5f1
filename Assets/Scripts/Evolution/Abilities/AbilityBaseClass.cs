@@ -25,26 +25,26 @@ public abstract class AbilityBaseClass : MonoBehaviour
     protected /*virtual*/ void Start ()
     {
         _character = GetComponent<Character> (); // get reference
-        StartCoroutine (waitForInitialization ()); // Start a waiting coroutine
+        StartCoroutine (WaitForInitialization ()); // Start a waiting coroutine
     }
 
 
     /// <summary>
     /// Waits until the character that this Ability belongs to has initialized all his Traits.
     /// </summary>
-    protected IEnumerator waitForInitialization ()
+    protected IEnumerator WaitForInitialization ()
     {
         yield return new WaitUntil (() => _character.TraitsInitialized == true);
 
         // if character has been initialized, get the traits you need
-        initializeAbility ();
+        InitializeAbility ();
     }
 
 
     /// <summary>
     /// Initialization method of this Class (Because Constructors don't work for MonoBehaviours). Retrieves all Traits this Ability is based on, then calculates all constant values that follow of these.
     /// </summary>
-    public virtual void initializeAbility ()
+    public virtual void InitializeAbility ()
     {
         //TraitManifestations = character.Genome.getTraitManifestations (new List<string> () { });
 

@@ -13,7 +13,7 @@ public class Genome {
     
     // Variables
     private List<bool> genome_string;
-    private List<TraitManifestation> trait_manifestations = new List<TraitManifestation> ();
+    private List<TraitManifestation> _traitManifestations = new List<TraitManifestation> ();
     //private List<int> past_mutations = new List<int> (); // rather fits in species
     private float mutation_scale = 1.0f; // how likely is this genome altered when mutating
 
@@ -24,6 +24,7 @@ public class Genome {
     //public List<Trait> Traits { get => getTraits (); } // currently not necessary
     //public List<int> PastMutations { get => past_mutations;/* set => genome_string = value;*/ }
     public float MutationScale { get => mutation_scale; set => mutation_scale = value; }
+    public List<TraitManifestation> TraitManifestations { get => _traitManifestations; }
 
 
     /// <summary>
@@ -44,7 +45,7 @@ public class Genome {
     /// </summary>
     public void updateIntensities ()
     {
-        foreach ( TraitManifestation manifestation in trait_manifestations )
+        foreach ( TraitManifestation manifestation in _traitManifestations )
         {
             manifestation.updateIntensityStatus (genome_string);
         }
@@ -75,11 +76,11 @@ public class Genome {
     public void manifestTrait ( Trait trait )
     {
         // if trait is already in this genome, abort
-        foreach (TraitManifestation manifestation in trait_manifestations) if (manifestation.Name == trait.Name) return;
+        foreach (TraitManifestation manifestation in _traitManifestations) if (manifestation.Name == trait.Name) return;
         
         // the trait is added at a random position in the genome
         int pos = Random.Range (0, GenomeString.Count);
-        trait_manifestations.Add (new TraitManifestation (trait, pos, genome_string) );
+        _traitManifestations.Add (new TraitManifestation (trait, pos, genome_string) );
     }
 
 
@@ -89,9 +90,9 @@ public class Genome {
     public void manifestTrait ( Trait trait, int position_in_genome )
     {
         // if trait is already in this genome, abort
-        foreach ( TraitManifestation manifestation in trait_manifestations ) if ( manifestation.Name == trait.Name ) return;
+        foreach ( TraitManifestation manifestation in _traitManifestations ) if ( manifestation.Name == trait.Name ) return;
 
-        trait_manifestations.Add (new TraitManifestation (trait, position_in_genome, genome_string ));
+        _traitManifestations.Add (new TraitManifestation (trait, position_in_genome, genome_string ));
     }
 
     /* Simple overlapping
@@ -127,7 +128,7 @@ public class Genome {
         {
             // Find the position before the begin of the overlapping space, so that the number ob overlapping digits is overlapping_segments[0].
             int position = overlapping_segments.ElementAt(0).Key - (new_trait.Length - overlapping_segments[0] );
-            trait_manifestations.Add (new TraitManifestation (new_trait, position, genome_string));
+            _traitManifestations.Add (new TraitManifestation (new_trait, position, genome_string));
         }
         /*else
         {
@@ -212,7 +213,7 @@ public class Genome {
     public TraitManifestation GetManifestation (TraitTypes requested_trait_type)
     {
         bool found = false;
-        foreach ( TraitManifestation manifestation in this.trait_manifestations )
+        foreach ( TraitManifestation manifestation in this._traitManifestations )
         {
             // TraitManifestations obviously have the same name as the Trait they correspond to
             if ( requested_trait_type.ToString () == manifestation.Name )

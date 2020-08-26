@@ -20,7 +20,7 @@ public static class TraitData
         // Determines how much leaves are produced (+ how much light can be consumed and blocked).
         available_traits[(int)TraitTypes.LeavesDensity] = new Trait (TraitTypes.LeavesDensity, 7, IntensityFunctionCollection.CountTrueValues);
         // Determines how much light is needed to stay alive and grow (overlaps heavily with growing-related Traits, genome-wise.)
-        available_traits[(int)TraitTypes.LightRequirement] = new Trait (TraitTypes.LightRequirement, 16, IntensityFunctionCollection.CountTrueValues);
+        available_traits[(int)TraitTypes.LightRequirement] = new Trait (TraitTypes.LightRequirement, 16, IntensityFunctionCollection.CountFalseValues);
         // Basic value for determination of kids or saplings count
         available_traits[(int)TraitTypes.OffspringCount] = new Trait (TraitTypes.OffspringCount, 10, IntensityFunctionCollection.CountTrueValues);
 
