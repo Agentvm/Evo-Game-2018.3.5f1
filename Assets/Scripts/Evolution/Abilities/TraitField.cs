@@ -15,7 +15,7 @@ public class TraitField
     public TraitField ( TraitTypes traitType, Character character )
     {
         _name = traitType.ToString ();
-        _intensity = character.Genome.GetManifestation (TraitTypes.MaxSize ).Intensity;
-        _length = character.Genome.GetManifestation (TraitTypes.MaxSize).Length;
+        _intensity = character.Genome.GetManifestation (traitType).Intensity;
+        _length = character.Genome.GetManifestation (traitType).Length;
     }
 }
