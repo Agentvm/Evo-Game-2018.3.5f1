@@ -4,7 +4,12 @@
  * 
  * 
  * 
- * 
+ 
+
+ --- Bugs --------------------------------------------------------------------------------
+ - There are no bugs.
+
+
 
  --- Designfragen ----------------------
  
@@ -52,8 +57,7 @@
  - Implement a manifestTrait () - function that allows Trait Correlation between scattered Traits
  
  --- ToDo: The Road to Life
- - Add a measure of life energy to the Character class. It is depleted for growth and filled by photosynthesis or nourishment
- - Make Plants fight for light: Size means Height to put others below you and LeavesDensity means both increasing income and shadowing others
+ - (check) Add a measure of life energy to the Character class. It is depleted for growth and filled by photosynthesis or nourishment
  - Make a Baby
  - Invite the Reaper for Tea
  - Project Evergreen: Make Plants
