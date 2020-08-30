@@ -7,7 +7,12 @@
  
 
  --- Bugs --------------------------------------------------------------------------------
- - There are no bugs.
+ - Cell Size should correspond to LeavesArea, Cell Alpha to LeavesDensity
+
+
+ --- Quick Ideas ---
+ - Simplify growth formula?
+ - Make Growth dependend on lifetime
 
 
 
