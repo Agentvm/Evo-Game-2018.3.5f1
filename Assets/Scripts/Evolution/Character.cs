@@ -7,7 +7,7 @@ using UnityEngine;
 public class Character : MonoBehaviour {
 
     // In-game values
-    private float _energy = 0f;
+    private float _energy = 0.5f;
     private float _maxEnergy = 1f;
 
     // Innards
@@ -15,7 +15,7 @@ public class Character : MonoBehaviour {
     private SpriteRenderer _sprite;
     private bool _traitsInitialized = false;
     private List<AbilityBaseClass> _abilities = new List<AbilityBaseClass> ();
-    //private float size;
+    private Vector3 _writeVector = new Vector3 ();
 
     // Properties
     public Genome Genome { get => _genome; }
@@ -95,6 +95,19 @@ public class Character : MonoBehaviour {
         Color temporaryColor = _sprite.color;
         temporaryColor.a = newAlpha;
         _sprite.color = temporaryColor;
+    }
+
+    public void SetSize ( float newSize )
+    {
+        _writeVector.Set (1 + newSize, 1 + newSize, 1 + newSize);
+        this.transform.localScale = _writeVector;
+    }
+
+    public void SetElevation ( float newElevation )
+    {
+        _writeVector = this.transform.position;
+        _writeVector.z = Mathf.Clamp (-newElevation, -1.0f, 0.01f);
+        this.transform.position = _writeVector;
     }
 
     // maybe make this function scale to represent the whole string? (scaling is bad, because in binary code, the first digit will get extreme impact)
