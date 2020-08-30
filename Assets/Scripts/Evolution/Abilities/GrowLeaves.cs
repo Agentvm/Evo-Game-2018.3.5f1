@@ -24,9 +24,12 @@ public class GrowLeaves : AbilityBaseClass
     float _growthPerTick;
 
     public float CurrentLeavesArea { get => _currentLeavesArea; }
+    public float CurrentLeavesDensity { get => _currentLeavesDensity;}
 
     override public void InitializeAbility ()
     {
+        base.InitializeAbility ();
+
         // Get References
         _collectSunlightAbility = this.GetComponent<CollectSunlight> ();
         _growAbility = this.GetComponent<Grow> ();
@@ -36,31 +39,30 @@ public class GrowLeaves : AbilityBaseClass
         _lightRequirementTrait = new TraitField (TraitTypes.LightRequirement, this._character);
 
         // Set initial value for LeavesDensity
-        _currentLeavesDensity = _leavesDensityTrait.Intensity / _leavesDensityTrait.MaxIntensity / 10;
-        _maxLeavesDensity = _leavesDensityTrait.Intensity / _leavesDensityTrait.MaxIntensity;
+        _currentLeavesDensity = 0.1f;
+        _maxLeavesDensity = 0.9f;
         _currentLeavesArea = _leavesDensityTrait.Intensity / 10;
         _maxLeavesArea = _leavesDensityTrait.Intensity;
         _character.SetAlpha (_currentLeavesArea / _maxLeavesArea);
 
         // Set initial value for LightRequirement and Growth
-        _lightRequirement = _lightRequirementTrait.Intensity / _lightRequirementTrait.MaxIntensity;
         _growthPerTick = _growAbility.GrowthPerTick;
+        _lightRequirement = _lightRequirementTrait.Intensity / _lightRequirementTrait.MaxIntensity;
+        _lightRequirement *= _growthPerTick;
     }
 
     override public void Tick ()
     {
         // Grow Leaves
-        if ( _character.SubtractEnergy (_lightRequirement) )
+        if ( (_currentLeavesArea < _maxLeavesArea || _currentLeavesDensity < _maxLeavesDensity) && _character.SubtractEnergy (_lightRequirement) )
         {
             // Increase Leaves Area and show changes on GameObject
             _currentLeavesArea = Mathf.Min (_growthPerTick + _currentLeavesArea, _maxLeavesArea);
             SetSize ();
-            Debug.Log ("Current Leaves Area: " + _currentLeavesArea);
 
             // Increase Leaves Density and show changes on GameObject
             _currentLeavesDensity = Mathf.Min (0.1f + _currentLeavesDensity, _maxLeavesDensity);
             SetAlpha ();
-            Debug.Log ("Current Leaves Density: " + _currentLeavesDensity);
         }
     }
 

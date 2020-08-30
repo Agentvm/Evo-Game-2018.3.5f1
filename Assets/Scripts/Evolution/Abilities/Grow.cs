@@ -21,11 +21,13 @@ public class Grow : AbilityBaseClass
     // Traits
     TraitField _maxSizeTrait;
     TraitField _growRateTrait;
+    TraitField _lightRequirementTrait;
 
     // Variables
     private float _size = 1f;
     float _maxSize;
     float _growthPerTick; // means game tick
+    private float _lightRequirement;
 
     public float GrowthPerTick { get => _growthPerTick; }
     public float MaxSize { get => _maxSize; }
@@ -45,8 +47,12 @@ public class Grow : AbilityBaseClass
     /// </summary>
     override public void InitializeAbility ()
     {
+        base.InitializeAbility ();
+
+        // Get Traits
         _maxSizeTrait = new TraitField (TraitTypes.MaxSize, this._character);
         _growRateTrait = new TraitField (TraitTypes.GrowRate, this._character);
+        _lightRequirementTrait = new TraitField (TraitTypes.LightRequirement, this._character);
 
         _canopyReference = this.GetComponent<GrowLeaves> ();
 
@@ -61,6 +67,10 @@ public class Grow : AbilityBaseClass
         float normalized_rate_of_growth  =  Mathf.Pow (400f, 1f + (float)relative_rate_of_growth) / (float)(400f*400f);
         _growthPerTick = normalized_rate_of_growth * _maxSize;
 
+        // LightRequirement
+        _lightRequirement = _lightRequirementTrait.Intensity / _lightRequirementTrait.MaxIntensity;
+        _lightRequirement *= _growthPerTick;
+
         // Scale GameObject initially
         SetSize ();
     }
@@ -71,13 +81,12 @@ public class Grow : AbilityBaseClass
     /// </summary>
     override public void Tick ()
     {
-        if ( _size < _maxSize )
+        if ( _size < _maxSize && _character.SubtractEnergy (_lightRequirement) )
         {
             // Change the size in script and for the GameObject
             _size = Mathf.Min (_maxSize, _size + _growthPerTick);
             SetSize ();
         }
-
     }
 
 

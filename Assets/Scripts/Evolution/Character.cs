@@ -16,6 +16,7 @@ public class Character : MonoBehaviour {
     private bool _traitsInitialized = false;
     private List<AbilityBaseClass> _abilities = new List<AbilityBaseClass> ();
     private Vector3 _writeVector = new Vector3 ();
+    private bool _isDead = false;
 
     // Properties
     public Genome Genome { get => _genome; }
@@ -92,6 +93,8 @@ public class Character : MonoBehaviour {
 
     public void SetAlpha (float newAlpha)
     {
+        if ( _isDead ) return;
+
         Color temporaryColor = _sprite.color;
         temporaryColor.a = newAlpha;
         _sprite.color = temporaryColor;
@@ -99,19 +102,28 @@ public class Character : MonoBehaviour {
 
     public void SetSize ( float newSize )
     {
+        if ( _isDead ) return;
+
         _writeVector.Set (1 + newSize, 1 + newSize, 1 + newSize);
         this.transform.localScale = _writeVector;
     }
 
     public void SetElevation ( float newElevation )
     {
+        if ( _isDead ) return;
+
         float elevation = newElevation / 10f;
         _writeVector = this.transform.position;
         _writeVector.z = Mathf.Clamp (-elevation, -1.0f, 0.01f);
         this.transform.position = _writeVector;
     }
 
-    // maybe make this function scale to represent the whole string? (scaling is bad, because in binary code, the first digit will get extreme impact)
+    private void OnDestroy ()
+    {
+        _isDead = true;
+    }
+
+    // Maybe make this function scale to represent the whole string? (scaling is bad, because in binary code, the first digit will get extreme impact)
     /// <summary>
     /// Changes the color of the sprite in respect to the first 32 digits of the GenomeString.
     /// Binary to Decimal conversion of respectively 8 digits (boolean values in genome_string) is used.

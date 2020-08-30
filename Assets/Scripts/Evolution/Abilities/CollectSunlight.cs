@@ -18,6 +18,8 @@ public class CollectSunlight : AbilityBaseClass
 
     override public void InitializeAbility ()
     {
+        base.InitializeAbility ();
+
         // Get References
         _growLeavesAbility = this.GetComponent<GrowLeaves> ();
 
@@ -25,7 +27,7 @@ public class CollectSunlight : AbilityBaseClass
         _lightRequirementTrait = new TraitField (TraitTypes.LightRequirement, _character);
 
         // Initialize
-        _saturationPerTick = _growLeavesAbility.CurrentLeavesArea;
+        _saturationPerTick = _growLeavesAbility.CurrentLeavesArea * _growLeavesAbility.CurrentLeavesDensity;
         _preservationEnergyPerTick = _lightRequirementTrait.Intensity / _lightRequirementTrait.MaxIntensity / 10;        
     }
 
