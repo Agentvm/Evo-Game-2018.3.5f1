@@ -35,9 +35,18 @@ public class Genome {
         // Fill Genome with random values
         genome_string = new List<bool> (30);
         for ( int i = 0; i < length; i++ ) genome_string.Add (Random.value > 0.5f);
-    }    
-    
-    
+    }
+
+    /// <summary>
+    /// Constructor for a randomized genome.
+    /// </summary>
+    public Genome ( List<bool> genomeString )
+    {
+        // Copy Genome
+        genome_string = genomeString;
+    }
+
+
     // Functions
 
     /// <summary>

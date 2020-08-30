@@ -70,13 +70,13 @@ public class GameCore : MonoBehaviour
     {
         Vector3 spawn_point = RandomPointOnPlane (_gameVariables.Map );
 
-        // make them similar
+        // Make them similar
         Genome genome1 = new Genome ();
-        Genome genome2 = genome1;
+        Genome genome2 = new Genome (genome1.GenomeString);
         genome1.mutate ();
         genome2.mutate ();
 
-        // initialise a basic individual Character
+        // Initialise a basic individual Character
         GameObject character = (GameObject)Instantiate(Resources.Load("Cell" ), spawn_point, new Quaternion (0f, 0f, 0f, 1f ));
         Character character_script_reference = character.GetComponent<Character> ();
         character_script_reference.Birth (genome1,
