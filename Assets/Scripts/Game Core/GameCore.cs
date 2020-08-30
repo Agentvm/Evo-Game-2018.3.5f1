@@ -81,14 +81,14 @@ public class GameCore : MonoBehaviour
         Character character_script_reference = character.GetComponent<Character> ();
         character_script_reference.Birth (genome1,
             new List<TraitTypes> () { TraitTypes.GrowRate, TraitTypes.MaxSize, TraitTypes.OffspringCount, TraitTypes.LightRequirement, TraitTypes.LeavesDensity },
-            new List<AbilityTypes> () { AbilityTypes.Grow, AbilityTypes.CollectSunlight, AbilityTypes.GrowLeaves });
+            new List<AbilityTypes> () { AbilityTypes.Grow, AbilityTypes.CollectSunlight, AbilityTypes.GrowLeaves, AbilityTypes.ReceiveShadows });
         _gameVariables.IndividualsLexicon.Add (character, new List<AbilityBaseClass> (character.GetComponents<AbilityBaseClass> ()));
 
         character = (GameObject)Instantiate (Resources.Load ("Cell"), spawn_point + new Vector3 (Random.value * 5f, Random.value * 5f, 0f), new Quaternion (0f, 0f, 0f, 1f));
         character_script_reference = character.GetComponent<Character> ();
         character_script_reference.Birth (genome2,
             new List<TraitTypes> () { TraitTypes.GrowRate, TraitTypes.MaxSize, TraitTypes.OffspringCount, TraitTypes.LightRequirement, TraitTypes.LeavesDensity },
-            new List<AbilityTypes> () { AbilityTypes.Grow, AbilityTypes.CollectSunlight, AbilityTypes.GrowLeaves });
+            new List<AbilityTypes> () { AbilityTypes.Grow, AbilityTypes.CollectSunlight, AbilityTypes.GrowLeaves, AbilityTypes.ReceiveShadows });
         _gameVariables.IndividualsLexicon.Add (character, new List<AbilityBaseClass> (character.GetComponents<AbilityBaseClass> ()));
 
     }

@@ -24,7 +24,7 @@ public class GrowLeaves : AbilityBaseClass
     float _growthPerTick;
 
     public float CurrentLeavesArea { get => _currentLeavesArea; }
-    public float CurrentLeavesDensity { get => _currentLeavesDensity;}
+    public float CurrentLeavesDensity { get => _currentLeavesDensity; }
 
     override public void InitializeAbility ()
     {

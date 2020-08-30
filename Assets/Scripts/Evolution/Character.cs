@@ -9,6 +9,8 @@ public class Character : MonoBehaviour {
     // In-game values
     private float _energy = 0.5f;
     private float _maxEnergy = 1f;
+    private float _preservationEnergyPerTick = 0f;
+    private double _lastTickOfPreservationSubtraction = 0;
 
     // Innards
     private Genome _genome;
@@ -22,6 +24,7 @@ public class Character : MonoBehaviour {
     public Genome Genome { get => _genome; }
     public bool TraitsInitialized { get => _traitsInitialized; } // Are a genom and all necessary traits attatched?
     public float Energy { get => _energy; }
+    public float PreservationEnergyPerTick { get => _preservationEnergyPerTick; set => _preservationEnergyPerTick = value; }
 
     //public float Size { get => size;}
     //public Color Color { get => color; }
@@ -40,6 +43,14 @@ public class Character : MonoBehaviour {
 
     public bool SubtractEnergy ( float amount )
     {
+        // Substract energy "upkeep" for this character before subtracting Energy the first time
+        double currentGameTicks = GameCore.Instance.GameVariables.CurrentGameTicks;
+        if ( currentGameTicks > _lastTickOfPreservationSubtraction )
+        {
+            _lastTickOfPreservationSubtraction = currentGameTicks;
+            SubtractPreservationEnergy (PreservationEnergyPerTick);
+        }
+
         if ( Energy >= amount )
         {
             _energy -= amount;

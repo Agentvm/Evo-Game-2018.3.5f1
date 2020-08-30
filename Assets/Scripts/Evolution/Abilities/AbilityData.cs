@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Put Abilities here to register them
-public enum AbilityTypes { Grow, GrowLeaves, CollectSunlight };
+public enum AbilityTypes { Grow, GrowLeaves, CollectSunlight, ReceiveShadows };
 
 // It takes care of the initialization of the basic data structures (Abilities that Characters have or develop).
 public static class AbilityData
