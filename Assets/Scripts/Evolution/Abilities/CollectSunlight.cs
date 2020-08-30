@@ -26,7 +26,7 @@ public class CollectSunlight : AbilityBaseClass
 
         // Initialize
         _saturationPerTick = _growLeavesAbility.CurrentLeavesArea;
-        _preservationEnergyPerTick = _lightRequirementTrait.Intensity / _lightRequirementTrait.Length / 10;        
+        _preservationEnergyPerTick = _lightRequirementTrait.Intensity / _lightRequirementTrait.MaxIntensity / 10;        
     }
 
     override public void Tick ()

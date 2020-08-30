@@ -10,7 +10,7 @@ public class TraitField
 
     public string Name { get => _name; }
     public float Intensity { get => _intensity; }
-    public float Length { get => _length; }
+    public float MaxIntensity { get => _length; }
 
     public TraitField ( TraitTypes traitType, Character character )
     {

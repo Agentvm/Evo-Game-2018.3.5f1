@@ -15,6 +15,9 @@ public class Grow : AbilityBaseClass
     public string Name { get => (this.GetType ()).ToString (); }
     */
 
+    // References
+    GrowLeaves _canopyReference = null;
+
     // Traits
     TraitField _maxSizeTrait;
     TraitField _growRateTrait;
@@ -45,40 +48,21 @@ public class Grow : AbilityBaseClass
         _maxSizeTrait = new TraitField (TraitTypes.MaxSize, this._character);
         _growRateTrait = new TraitField (TraitTypes.GrowRate, this._character);
 
-        //Debug.Log ("_maxSizeTrait.Intensity: " + _maxSizeTrait.Intensity);
-        //Debug.Log ("_growRateTrait.Intensity: " + _growRateTrait.Intensity);
+        _canopyReference = this.GetComponent<GrowLeaves> ();
 
-        //TraitManifestations = character.Genome.getTraitManifestations (new List<string> () { "MaxSize", "GrowRate" });
-
-        // calculate the values that remain fixed
+        // Calculate the values that remain fixed
         // MaxSize
-        float relative_max_size = _maxSizeTrait.Intensity / _maxSizeTrait.Length;
+        float relative_max_size = _maxSizeTrait.Intensity / _maxSizeTrait.MaxIntensity;
         _maxSize = Mathf.Pow (2, (float)relative_max_size + 1f); // rises exponentially: 2 to the power of 1f - 2f
 
         // GrowRate
         // min rate = 400^1 / 400^2 = 0,0025 --> 100 years to full growth | max rate = 400^2 / 400^2 = 1 --> 1 Season to full growth | mean rate = 400^1.5 / 400^2 = 0.05 --> 5 Years to full growth
-        float relative_rate_of_growth = _growRateTrait.Intensity / _growRateTrait.Length;
+        float relative_rate_of_growth = _growRateTrait.Intensity / _growRateTrait.MaxIntensity;
         float normalized_rate_of_growth  =  Mathf.Pow (400f, 1f + (float)relative_rate_of_growth) / (float)(400f*400f);
         _growthPerTick = normalized_rate_of_growth * _maxSize;
 
-        // make babies bigger
-        //size = 0.1f * max_size;
-        this.transform.localScale = new Vector3 (1 + _size, 1 + _size, 1 + _size); // should min_size be 1 ?
-    }
-
-
-    // helper function that does not really belong here
-    private string PrintGenome (Genome genome )
-    {
-        string str = "";
-
-        foreach (bool b in genome.GenomeString)
-        {
-            if ( b ) str += "1";
-            else str += 0;
-        }
-
-        return str;
+        // Scale GameObject initially
+        SetSize ();
     }
 
 
@@ -87,14 +71,38 @@ public class Grow : AbilityBaseClass
     /// </summary>
     override public void Tick ()
     {
-        if (_size < _maxSize )
+        if ( _size < _maxSize )
         {
-            // sprites are sized 1, 1, 1
-            _size = Mathf.Min (_maxSize, _size + _growthPerTick );
-            if ( this != null && this.transform != null && this.gameObject != null)
-                this.transform.localScale = new Vector3 (1 + _size, 1 + _size, 1 + _size ); // scale the GameObject // should min_size be 1 ?
+            // Change the size in script and for the GameObject
+            _size = Mathf.Min (_maxSize, _size + _growthPerTick);
+            SetSize ();
         }
-        
+
+    }
+
+
+    // Scale the GameObject to the current size, if size is not set according to GrowLeaves.CurrentLeavesArea
+    void SetSize ()
+    {
+        if ( _canopyReference == null )
+            _character?.SetSize (_size);
+        else
+            _character?.SetElevation (_size);
+    }
+
+
+    // helper function that does not really belong here
+    private string PrintGenome ( Genome genome )
+    {
+        string str = "";
+
+        foreach ( bool b in genome.GenomeString )
+        {
+            if ( b ) str += "1";
+            else str += 0;
+        }
+
+        return str;
     }
 
 }

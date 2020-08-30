@@ -105,8 +105,9 @@ public class Character : MonoBehaviour {
 
     public void SetElevation ( float newElevation )
     {
+        float elevation = newElevation / 10f;
         _writeVector = this.transform.position;
-        _writeVector.z = Mathf.Clamp (-newElevation, -1.0f, 0.01f);
+        _writeVector.z = Mathf.Clamp (-elevation, -1.0f, 0.01f);
         this.transform.position = _writeVector;
     }
 
