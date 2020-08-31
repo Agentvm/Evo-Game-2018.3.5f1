@@ -7,10 +7,13 @@
  
 
  --- Bugs --------------------------------------------------------------------------------
- - Cell Size should correspond to LeavesArea, Cell Alpha to LeavesDensity
+ - 
+
+ - (Check)Cell Size should correspond to LeavesArea, Cell Alpha to LeavesDensity
 
 
  --- Quick Ideas ---
+ - Find Collider Overlap Area in ReceiveShadows
  - Simplify growth formula?
  - Make Growth dependend on lifetime
 
