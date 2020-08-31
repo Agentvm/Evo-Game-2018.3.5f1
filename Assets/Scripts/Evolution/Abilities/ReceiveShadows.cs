@@ -6,38 +6,41 @@ using UnityEngine;
 [RequireComponent (typeof (GrowLeaves))]
 public class ReceiveShadows : AbilityBaseClass
 {
-    Ray _skyRay = default;
-    float _maxRaycastLenght = 1.0f;
+    // Components
+    Collider2D _collider;
+
+    // Cogs
+    Collider2D[] collidingShadows = new Collider2D[20];
+
+    // Values
     float _remainingSunlight = 1f;
     private float _shadowDimishingFactor = 0.8f; // We currently do not detect if the whole plant is shadowed
 
-    // Properties
-    private Ray SkyRay
-    {
-        get
-        {
-            // Fill the Ray at the first time of use
-            if ( _skyRay.Equals (default) )
-                _skyRay = new Ray (this.transform.position, -Vector3.forward);
-
-            return _skyRay;
-        }
-    }
-
+    // Property
     public float RemainingSunlight { get => _remainingSunlight; }
 
 
     private List<float> GetShadowDensities ()
     {
-        List<float> shadowDensityList = new List<float>();
+        if ( _collider == null ) return new List<float>();
 
-        // Send a Raycast upwards to find all Plants that are shadowing this one
-        foreach ( RaycastHit raycastHitInfo in Physics.RaycastAll (SkyRay, _maxRaycastLenght) )
+        // Get all colliding Colliders
+        int numberOfCollisions = _collider.OverlapCollider (new ContactFilter2D (), collidingShadows);
+
+        // And step through them
+        List<float> shadowDensityList = new List<float>();
+        for ( int i = 0; i <= numberOfCollisions; i++)
         {
-            GrowLeaves tallerPlantCanopy = raycastHitInfo.transform.GetComponent<GrowLeaves> ();
+            // Get the GrowLeaves Script to find the Current LeavesDensity
+            GrowLeaves tallerPlantCanopy = collidingShadows[i]?.transform.GetComponent<GrowLeaves> ();
             if ( tallerPlantCanopy != null )
-                shadowDensityList.Add (tallerPlantCanopy.CurrentLeavesArea);
+                shadowDensityList.Add (tallerPlantCanopy.CurrentLeavesDensity);
         }
+
+        // Clear Array and resize if needed
+        System.Array.Clear (collidingShadows, 0, numberOfCollisions);
+        if ( collidingShadows.Length - numberOfCollisions < 10 )
+            System.Array.Resize<Collider2D> (ref collidingShadows, numberOfCollisions * 2);
 
         return shadowDensityList;
     }
@@ -53,6 +56,8 @@ public class ReceiveShadows : AbilityBaseClass
     public override void InitializeAbility ()
     {
         base.InitializeAbility ();
+
+        _collider = this.GetComponent<Collider2D> ();
         UpdateShadowStrength ();
     }
 
