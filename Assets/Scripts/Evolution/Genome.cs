@@ -43,7 +43,7 @@ public class Genome {
     public Genome ( List<bool> genomeString )
     {
         // Copy Genome
-        genome_string = genomeString;
+        genome_string = new List<bool> (genomeString);
     }
 
 

@@ -37,7 +37,7 @@ public class GameCore : MonoBehaviour
 
         for (int i = 0; i < times; i++ )
         {
-            result += (int)Mathf.Round (Random.Range (1, faces));
+            result += (int)Mathf.Round (UnityEngine.Random.Range (1, faces));
         }
 
         return result;
@@ -62,6 +62,26 @@ public class GameCore : MonoBehaviour
         _gameVariables.IncreaseTicks();
     }
 
+    List<T> DeepCopyList<T> ( List<T> inList ) where T : System.ICloneable
+    {
+        List<T> outList = new List<T>(inList.Count);
+
+        foreach ( T element in inList )
+            outList.Add ((T)element.Clone ());
+
+        return outList;
+    }
+
+    List<T> CopyValueTypeList<T> ( List<T> inList ) where T : struct
+    {
+        List<T> outList = new List<T>(inList.Count);
+
+        foreach ( T element in inList )
+            outList.Add (element);
+
+        return outList;
+    }
+
     /// <summary>
     /// Instantiates two prefabs with the script Character and some Ability scripts attached. The genomes of those two closely resemble
     /// eachother, so that they can reproduce. They are placed near to eachother.
@@ -72,7 +92,7 @@ public class GameCore : MonoBehaviour
 
         // Make them similar
         Genome genome1 = new Genome ();
-        Genome genome2 = new Genome (genome1.GenomeString);
+        Genome genome2 = new Genome (CopyValueTypeList(genome1.GenomeString));
         genome1.mutate ();
         genome2.mutate ();
 
@@ -84,7 +104,7 @@ public class GameCore : MonoBehaviour
             new List<AbilityTypes> () { AbilityTypes.Grow, AbilityTypes.CollectSunlight, AbilityTypes.GrowLeaves, AbilityTypes.ReceiveShadows });
         _gameVariables.IndividualsLexicon.Add (character, new List<AbilityBaseClass> (character.GetComponents<AbilityBaseClass> ()));
 
-        character = (GameObject)Instantiate (Resources.Load ("Cell"), spawn_point + new Vector3 (Random.value * 5f, Random.value * 5f, 0f), new Quaternion (0f, 0f, 0f, 1f));
+        character = (GameObject)Instantiate (Resources.Load ("Cell"), spawn_point + new Vector3 (UnityEngine.Random.value * 5f, UnityEngine.Random.value * 5f, 0f), new Quaternion (0f, 0f, 0f, 1f));
         character_script_reference = character.GetComponent<Character> ();
         character_script_reference.Birth (genome2,
             new List<TraitTypes> () { TraitTypes.GrowRate, TraitTypes.MaxSize, TraitTypes.OffspringCount, TraitTypes.LightRequirement, TraitTypes.LeavesDensity },
@@ -108,8 +128,8 @@ public class GameCore : MonoBehaviour
         float minY = plane_with_mesh_collider.transform.position.z - plane_with_mesh_collider.transform.localScale.z * bounds.size.z * 0.5f;
 
         // make a new vector on a plane which lies in x and y direction (this would be nice if things did clip to the plane)
-        Vector3 newVec = new Vector3(Random.Range (minX, -minX),
-                                    Random.Range (minY, -minY),
+        Vector3 newVec = new Vector3(UnityEngine.Random.Range (minX, -minX),
+                                    UnityEngine.Random.Range (minY, -minY),
                                     plane_with_mesh_collider.transform.position.y - 0.2f
                                     );
 
